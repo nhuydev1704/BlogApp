@@ -5,6 +5,7 @@ import express from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import routes from './routes'
 
 const app = express()
 
@@ -16,9 +17,7 @@ app.use(morgan('dev'))
 app.use(cookieParser())
 
 // Routes
-app.get('/', (req, res) => {
-    res.json("helo blog")
-})
+app.use('/api', routes.authRouter)
 
 
 // database
