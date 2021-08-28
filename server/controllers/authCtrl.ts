@@ -3,6 +3,10 @@ import Users from "../models/userModel"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { generateActiveToken, generateAccessToken, generateRefreshToken } from "../config/generateToken"
+import sendEmail from '../config/sendMail'
+import { validateEmail } from "../middleware/valid"
+
+const CLIENT_URL = `${process.env.BASE_URL}`
 
 const authCtrl = {
     register: async (req: Request, res: Response) => {
@@ -19,13 +23,13 @@ const authCtrl = {
             }
 
             const active_token = generateActiveToken({ newUser })
+            const url = `${CLIENT_URL}/active/${active_token}`
 
-            res.json({
-                status: 'OK',
-                msg: "Đăng ký thành công.",
-                data: newUser,
-                active_token
-            })
+            if (validateEmail(account)) {
+                sendEmail(account, url, 'Xác thực')
+                return res.json({ msg: "Thành công! Hãy kiểm tra email của bạn." })
+            }
+
         } catch (err) {
             return res.status(500).json({ msg: err.message })
         }
