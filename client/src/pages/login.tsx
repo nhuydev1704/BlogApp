@@ -1,10 +1,105 @@
-import React from 'react'
+import { Button, Grid } from '@material-ui/core';
+import Card from '@material-ui/core/Card';
+import { makeStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
+import FacebookIcon from '@material-ui/icons/Facebook';
+import GTranslateIcon from '@material-ui/icons/GTranslate';
+import { useForm, SubmitHandler } from "react-hook-form";
+import React from 'react';
+
+
+type Inputs = {
+    name: string,
+    password: string,
+};
+
+const useStyles = makeStyles({
+    root2: {
+        flexGrow: 1,
+    },
+    root: {
+        minWidth: 420,
+        borderRadius: '10px'
+    },
+    title: {
+        textAlign: 'center'
+    },
+    form: {
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '40px',
+    },
+    button: {
+        marginTop: '10px',
+        width: '100%'
+    },
+    buttonSubmit: {
+        marginTop: 30
+    },
+    input: {
+        margin: '10px 0'
+    }
+
+});
 
 const Login = () => {
+    const classes = useStyles();
+    const { register, handleSubmit } = useForm<Inputs>();
+    const onSubmit: SubmitHandler<Inputs> = data => console.log(data);
     return (
-        <div>
-            <h2>Login</h2>
-        </div>
+        <>
+            <Grid
+                container
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                style={{ height: '90vh' }}
+            >
+                <Card className={classes.root} variant="outlined">
+                    <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
+                        <Typography className={classes.title} variant="h5" component="h2">
+                            Đăng nhập
+                        </Typography>
+                        <TextField {...register("name")} className={classes.input} id="standard-search" label="Email hoặc số điện thoại" type="search" />
+                        <TextField
+                            id="standard-password-input"
+                            label="Mật khẩu"
+                            type="password"
+                            autoComplete="current-password"
+                            {...register("password")}
+                        />
+                        <Button type="submit" className={`${classes.button} ${classes.buttonSubmit}`} variant="contained" color="primary">
+                            Đăng nhập
+                        </Button>
+                        <Grid container spacing={3}>
+                            <Grid item xs={6}>
+                                <Button
+                                    variant="contained"
+                                    // color="secondary"
+                                    className={`${classes.button}`}
+                                    startIcon={<FacebookIcon />}
+                                >
+                                    Facebook
+                                </Button>
+
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Button
+                                    variant="contained"
+                                    // color="secondary"
+                                    className={classes.button}
+                                    startIcon={<GTranslateIcon />}
+                                >
+                                    Google
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </form>
+                </Card>
+            </Grid>
+            <div style={{ position: 'fixed', top: 0, left: 0, bottom: 0, right: 0, background: '#ddd', zIndex: -1 }}></div>
+        </>
     )
 }
 
