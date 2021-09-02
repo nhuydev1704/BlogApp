@@ -50,6 +50,7 @@ export default function Header() {
     const renderMenu = (
         <Menu
             anchorEl={anchorEl}
+            getContentAnchorEl={null}
             anchorOrigin={{ vertical: 'center', horizontal: 'center' }}
             id={menuId}
             keepMounted
@@ -70,6 +71,7 @@ export default function Header() {
     const renderMobileMenu = (
         <Menu
             anchorEl={mobileMoreAnchorEl}
+            getContentAnchorEl={null}
             anchorOrigin={{ vertical: 'center', horizontal: 'center' }}
             id={mobileMenuId}
             keepMounted
@@ -125,7 +127,7 @@ export default function Header() {
                         <MenuIcon />
                     </IconButton>
                     <Typography className={classes.title} variant="h6" noWrap>
-                        <Link className={` ${classes.login}`} to="/">Blog App</Link>
+                        <Link className={` ${classes.login}`} to="/">Anh Quyền Blog</Link>
                     </Typography>
                     <Search classes={classes} />
                     <div className={classes.grow} />

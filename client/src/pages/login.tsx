@@ -2,15 +2,19 @@ import { Button, Grid } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import GTranslateIcon from '@material-ui/icons/GTranslate';
-import { useForm, SubmitHandler } from "react-hook-form";
-import React from 'react';
+import React, { useState } from 'react';
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+import LoginPass from '../components/auth/LoginPass';
+import LoginSms from '../components/auth/LoginSms';
+import { login } from '../redux/actions/authAction';
 
 
 type Inputs = {
-    name: string,
+    account: string,
     password: string,
 };
 
@@ -32,21 +36,50 @@ const useStyles = makeStyles({
     },
     button: {
         marginTop: '10px',
-        width: '100%'
+        width: '100%',
+    },
+    buttonGoogle: {
+        background: '#DB4437',
+        color: 'white'
+    },
+    buttonFacebook: {
+        background: '#4267B2',
+        color: 'white',
     },
     buttonSubmit: {
-        marginTop: 30
+        marginTop: 16
     },
     input: {
         margin: '10px 0'
+    },
+    buttonCustom: {
+    },
+    textRegister: {
+        display: 'flex',
+        fontSize: '1.05rem',
+        alignItems: 'center',
+        marginTop: '10px'
     }
 
 });
 
 const Login = () => {
     const classes = useStyles();
-    const { register, handleSubmit } = useForm<Inputs>();
-    const onSubmit: SubmitHandler<Inputs> = data => console.log(data);
+    const [typeLogin, setTypeLogin] = useState(false);
+    const { register, handleSubmit, reset } = useForm<Inputs>();
+
+    const dispatch = useDispatch();
+
+    const onSubmit: SubmitHandler<Inputs> = data => {
+        dispatch(login(data))
+    }
+
+    const handleChangeLogin = () => {
+        reset();
+        setTypeLogin(!typeLogin);
+    }
+
+
     return (
         <>
             <Grid
@@ -61,14 +94,36 @@ const Login = () => {
                         <Typography className={classes.title} variant="h5" component="h2">
                             Đăng nhập
                         </Typography>
-                        <TextField {...register("name")} className={classes.input} id="standard-search" label="Email hoặc số điện thoại" type="search" />
-                        <TextField
-                            id="standard-password-input"
-                            label="Mật khẩu"
-                            type="password"
-                            autoComplete="current-password"
-                            {...register("password")}
-                        />
+                        {typeLogin
+                            ? <LoginSms classes={classes} register={register} />
+                            : <LoginPass classes={classes} register={register} />
+                        }
+                        <Grid
+                            container
+                            direction="row"
+                            justifyContent="space-between"
+                            alignItems="center"
+                            style={{ marginTop: '10px' }}
+                        >
+                            <Grid item xs={6}>
+                                <Button className={classes.buttonCustom} color="secondary">
+                                    <Link
+                                        style={{ color: 'rgba(0, 0, 0, 0.87)', margin: '0 0 4px 4px' }}
+                                        to="/forPassword">
+                                        Quên mật khẩu?
+                                    </Link>
+                                </Button>
+                            </Grid>
+                            <Grid item xs={6} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                <Button
+                                    className={classes.buttonCustom}
+                                    color="primary"
+                                    onClick={handleChangeLogin}
+                                >
+                                    Đăng nhập SMS
+                                </Button>
+                            </Grid>
+                        </Grid>
                         <Button type="submit" className={`${classes.button} ${classes.buttonSubmit}`} variant="contained" color="primary">
                             Đăng nhập
                         </Button>
@@ -77,7 +132,7 @@ const Login = () => {
                                 <Button
                                     variant="contained"
                                     // color="secondary"
-                                    className={`${classes.button}`}
+                                    className={`${classes.button} ${classes.buttonFacebook}`}
                                     startIcon={<FacebookIcon />}
                                 >
                                     Facebook
@@ -88,13 +143,17 @@ const Login = () => {
                                 <Button
                                     variant="contained"
                                     // color="secondary"
-                                    className={classes.button}
+                                    className={`${classes.button} ${classes.buttonGoogle}`}
                                     startIcon={<GTranslateIcon />}
                                 >
                                     Google
                                 </Button>
                             </Grid>
                         </Grid>
+                        <Typography className={`${classes.textRegister}`} variant="h6" gutterBottom>
+                            Bạn chưa có tài khoản?
+                            <Link style={{ color: '#4267B2', margin: '0 0 4px 4px' }} to="/register">Đăng kí ngay</Link>
+                        </Typography>
                     </form>
                 </Card>
             </Grid>
