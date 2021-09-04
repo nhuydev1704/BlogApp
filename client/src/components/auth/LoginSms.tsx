@@ -5,7 +5,7 @@ const LoginSms = (props: any) => {
     return (
         <>
             <TextField
-                id="standard-password-input"
+                id="standard-password-input5"
                 label="Số điện thoại"
                 type="search"
                 autoComplete="current-password"

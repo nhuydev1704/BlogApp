@@ -35,7 +35,7 @@ const authCtrl = {
                 return res.json({ msg: "Thành công! Hãy kiểm tra điện thoại của bạn." })
             }
 
-        } catch (err) {
+        } catch (err: any) {
             return res.status(500).json({ msg: err.message })
         }
     },
@@ -49,20 +49,17 @@ const authCtrl = {
 
             if (!newUser) return res.status(400).json({ msg: "Xác thực không hợp lệ." })
 
-            const user = new Users(newUser)
+            const user = await Users.findOne({ account: newUser.account })
+            if (user) return res.status(400).json({ msg: "Tài khoản tồn tại." })
 
-            await user.save()
+            const new_user = new Users(newUser)
+
+            await new_user.save()
 
             res.json({ msg: "Tài khoản đã được kích hoạt." })
-        } catch (err) {
-            let errMsg;
-            if (err.code === 11000) {
-                errMsg = Object.keys(err.keyValue)[0] + " đã tồn tại."
-            } else {
-                let name = Object.keys(err.errors)[0]
-                errMsg = err.errors[`${name}`].message
-            }
-            return res.status(500).json({ msg: errMsg })
+        } catch (err: any) {
+
+            return res.status(500).json({ msg: err.message })
         }
     },
     login: async (req: Request, res: Response) => {
@@ -74,7 +71,7 @@ const authCtrl = {
 
             loginUser(user, password, res)
 
-        } catch (err) {
+        } catch (err: any) {
             return res.status(500).json({ msg: err.message })
         }
     },
@@ -83,7 +80,7 @@ const authCtrl = {
             res.clearCookie('refreshtoken', { path: `/api/refresh_token` })
             return res.json({ msg: "Đăng xuất thành công" })
 
-        } catch (err) {
+        } catch (err: any) {
             return res.status(500).json({ msg: err.message })
         }
     },
@@ -102,7 +99,7 @@ const authCtrl = {
 
             res.json({ access_token })
 
-        } catch (err) {
+        } catch (err: any) {
             return res.status(500).json({ msg: err.message })
         }
     }

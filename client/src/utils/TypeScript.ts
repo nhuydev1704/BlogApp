@@ -5,13 +5,17 @@ export type RootStore = ReturnType<typeof rootReducer>
 
 
 export interface IParams {
-    page: string,
+    page: string
     slug: string
 }
 
 export interface IUserLogin {
-    account: string,
+    account: string
     password: string
+}
+
+export interface IUserRegister extends IUserLogin {
+    name: string
 }
 
 export interface IUser extends IUserLogin {
@@ -25,7 +29,7 @@ export interface IUser extends IUserLogin {
 }
 
 export interface IAlert {
-    loading?: boolean,
+    loading?: boolean
     success?: string | string[]
     errors?: string | string[]
 }
