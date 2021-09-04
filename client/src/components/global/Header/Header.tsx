@@ -107,7 +107,7 @@ export default function Header() {
                 </IconButton>
                 {
                     bfLoginLinks.map((link, index) => (
-                        <Link className={classes.login} key={index} to={link.path}>{link.label}</Link>
+                        <Link className={classes.loginHeader} key={index} to={link.path}>{link.label}</Link>
                     ))
                 }
             </MenuItem>
@@ -126,8 +126,8 @@ export default function Header() {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography className={classes.title} variant="h6" noWrap>
-                        <Link className={` ${classes.login}`} to="/">Anh Quyền Blog</Link>
+                    <Typography className={classes.titleHeader} variant="h6" noWrap>
+                        <Link className={` ${classes.loginHeader}`} to="/">Anh Quyền Blog</Link>
                     </Typography>
                     <Search classes={classes} />
                     <div className={classes.grow} />
@@ -152,10 +152,10 @@ export default function Header() {
                         >
                             <AccountCircle />
                         </IconButton>
-                        <Typography className={`${classes.title} ${classes.titleLogin}`} variant="h6" noWrap>
+                        <Typography className={`${classes.titleHeader} ${classes.titleLogin}`} variant="h6" noWrap>
                             {
                                 bfLoginLinks.map((link, index) => (
-                                    <Link className={classes.login} key={index} to={link.path}>{link.label}</Link>
+                                    <Link className={classes.loginHeader} key={index} to={link.path}>{link.label}</Link>
                                 ))
                             }
                         </Typography>

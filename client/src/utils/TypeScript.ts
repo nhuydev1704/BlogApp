@@ -1,3 +1,9 @@
+import rootReducer from '../redux/reducers/index'
+
+export type RootStore = ReturnType<typeof rootReducer>
+
+
+
 export interface IParams {
     page: string,
     slug: string
@@ -18,3 +24,8 @@ export interface IUser extends IUserLogin {
     _id: string
 }
 
+export interface IAlert {
+    loading?: boolean,
+    success?: string | string[]
+    errors?: string | string[]
+}

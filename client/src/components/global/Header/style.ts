@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme: Theme) =>
         menuButton: {
             marginRight: theme.spacing(2),
         },
-        title: {
+        titleHeader: {
             display: 'none',
             [theme.breakpoints.up('sm')]: {
                 display: 'block',
@@ -67,9 +67,9 @@ const useStyles = makeStyles((theme: Theme) =>
             display: 'flex',
             alignItems: 'center'
         },
-        login: {
+        loginHeader: {
             textDecoration: 'none',
-            color: 'inherit',
+            color: 'white',
             marginLeft: '20px'
         },
         account: {
