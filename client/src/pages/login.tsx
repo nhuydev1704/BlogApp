@@ -2,8 +2,6 @@ import { Button, Grid } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import FacebookIcon from '@material-ui/icons/Facebook';
-import GTranslateIcon from '@material-ui/icons/GTranslate';
 import React, { useState, useEffect } from 'react';
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useDispatch } from 'react-redux';
@@ -11,14 +9,16 @@ import { Link, useHistory } from 'react-router-dom';
 import LoginPass from '../components/auth/LoginPass';
 import LoginSms from '../components/auth/LoginSms';
 import Loading from '../components/notification/Loading';
-import { login } from '../redux/actions/authAction';
+import { login, loginSMS } from '../redux/actions/authAction';
 import { useSelector } from 'react-redux'
 
 import { RootStore } from '../utils/TypeScript'
+import SocicalLogin from '../components/auth/SocicalLogin';
 
 type Inputs = {
     account: string,
     password: string,
+    type: string
 };
 
 const useStyles = makeStyles({
@@ -82,7 +82,12 @@ const Login = () => {
     }, [auth.access_token, history]);
 
     const onSubmit: SubmitHandler<Inputs> = data => {
-        dispatch(login(data))
+        const { type, ...dataClone } = data
+        if (data.type === 'sms') {
+            dispatch(loginSMS(dataClone))
+        } else {
+            dispatch(login(dataClone))
+        }
     }
 
     const handleChangeLogin = () => {
@@ -132,36 +137,14 @@ const Login = () => {
                                         color="primary"
                                         onClick={handleChangeLogin}
                                     >
-                                        Đăng nhập SMS
+                                        {!typeLogin ? 'Đăng nhập SMS' : 'Đăng nhập Email'}
                                     </Button>
                                 </Grid>
                             </Grid>
                             <Button type="submit" className={`${classes.button} ${classes.buttonSubmit}`} variant="contained" color="primary">
                                 Đăng nhập
                             </Button>
-                            <Grid container spacing={3}>
-                                <Grid item xs={6}>
-                                    <Button
-                                        variant="contained"
-                                        // color="secondary"
-                                        className={`${classes.button} ${classes.buttonFacebook}`}
-                                        startIcon={<FacebookIcon />}
-                                    >
-                                        Facebook
-                                    </Button>
-
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Button
-                                        variant="contained"
-                                        // color="secondary"
-                                        className={`${classes.button} ${classes.buttonGoogle}`}
-                                        startIcon={<GTranslateIcon />}
-                                    >
-                                        Google
-                                    </Button>
-                                </Grid>
-                            </Grid>
+                            <SocicalLogin classes={classes} />
                             <Typography className={`${classes.textRegister}`} variant="h6" gutterBottom>
                                 Bạn chưa có tài khoản?
                                 <Link style={{ color: '#4267B2', margin: '0 0 4px 4px' }} to="/register">Đăng kí ngay</Link>

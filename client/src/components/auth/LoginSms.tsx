@@ -2,6 +2,7 @@ import { TextField } from '@material-ui/core'
 import React from 'react'
 
 const LoginSms = (props: any) => {
+
     return (
         <>
             <TextField
@@ -10,6 +11,15 @@ const LoginSms = (props: any) => {
                 type="search"
                 autoComplete="current-password"
                 {...props.register("account")}
+            />
+            <TextField
+                id="standard-password-input99"
+                label=""
+                type="search"
+                value="sms"
+                autoComplete="current-password"
+                {...props.register("type")}
+                hidden
             />
         </>
     )

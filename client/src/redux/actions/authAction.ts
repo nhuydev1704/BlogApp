@@ -23,13 +23,6 @@ export const login = (userLogin: IUserLogin) => async (dispatch: Dispatch<IAuthT
 
         dispatch({ type: AUTH, payload: res.data })
         localStorage.setItem('logged', 'nguyennhuy')
-        // dispatch({
-        //     type: AUTH,
-        //     payload: {
-        //         token: res.data.access_token,
-        //         user: res.data.user
-        //     }
-        // })
 
     } catch (err: any) {
         dispatch({ type: ALERT, payload: { loading: false } })
@@ -79,6 +72,7 @@ export const refreshToken = () => async (dispatch: Dispatch<IAuthType | IAlertTy
         dispatch({ type: AUTH, payload: res.data })
 
     } catch (err: any) {
+        dispatch({ type: ALERT, payload: { loading: false } })
         notification['error']({
             message: "Blog Nguyễn Như Ý",
             description: err?.response?.data?.msg,
@@ -90,9 +84,91 @@ export const logout = () => async (dispatch: Dispatch<IAuthType | IAlertType>) =
     try {
         localStorage.removeItem('logged')
         const url = 'logout'
-        const res = await getAPI(url)
+        await getAPI(url)
         window.location.href = '/'
     } catch (err: any) {
+        notification['error']({
+            message: "Blog Nguyễn Như Ý",
+            description: err?.response?.data?.msg,
+        });
+    }
+}
+
+export const gooogleLogin = (id_token: string) => async (dispatch: Dispatch<IAuthType | IAlertType>) => {
+    try {
+        dispatch({ type: ALERT, payload: { loading: true } })
+
+        const url = `google_login`
+        const res = await postAPI(url, { id_token })
+        if (res.status === 200) {
+            notification['success']({
+                message: "Blog Nguyễn Như Ý",
+                description: res.data.msg,
+            });
+        }
+
+        dispatch({ type: ALERT, payload: { loading: false } })
+
+        dispatch({ type: AUTH, payload: res.data })
+        localStorage.setItem('logged', 'nguyennhuy')
+    } catch (err: any) {
+        dispatch({ type: ALERT, payload: { loading: false } })
+        notification['error']({
+            message: "Blog Nguyễn Như Ý",
+            description: err?.response?.data?.msg,
+        });
+    }
+}
+
+export const facebookLogin = (accessToken: string, userID: string) => async (dispatch: Dispatch<IAuthType | IAlertType>) => {
+    try {
+        dispatch({ type: ALERT, payload: { loading: true } })
+
+        const url = `facebook_login`
+        const res = await postAPI(url, { accessToken, userID })
+        if (res.status === 200) {
+            notification['success']({
+                message: "Blog Nguyễn Như Ý",
+                description: res.data.msg,
+            });
+        }
+
+        dispatch({ type: ALERT, payload: { loading: false } })
+
+        dispatch({ type: AUTH, payload: res.data })
+        localStorage.setItem('logged', 'nguyennhuy')
+    } catch (err: any) {
+        dispatch({ type: ALERT, payload: { loading: false } })
+        notification['error']({
+            message: "Blog Nguyễn Như Ý",
+            description: err?.response?.data?.msg,
+        });
+    }
+}
+
+export const loginSMS = (accountRes: IUserLogin) => async (dispatch: Dispatch<IAuthType | IAlertType>) => {
+    const { account } = accountRes
+    const phone = `+84${account.slice(1)}`
+
+    try {
+        dispatch({ type: ALERT, payload: { loading: true } })
+        console.log(phone)
+
+        const url = `login_sms`
+        const res = await postAPI(url, { phone })
+        if (res.status === 200) {
+            notification['success']({
+                message: "Blog Nguyễn Như Ý",
+                description: res.data.msg,
+            });
+        }
+
+        dispatch({ type: ALERT, payload: { loading: false } })
+
+        // dispatch({ type: AUTH, payload: res.data })
+        // // localStorage.setItem('logged', 'nguyennhuy')
+    } catch (err: any) {
+        dispatch({ type: ALERT, payload: { loading: false } })
         notification['error']({
             message: "Blog Nguyễn Như Ý",
             description: err?.response?.data?.msg,

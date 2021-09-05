@@ -2,7 +2,7 @@ import { Button, Grid } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import React, { useState } from 'react';
+import React from 'react';
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -65,7 +65,7 @@ const useStyles = makeStyles({
 
 const Register = () => {
     const classes = useStyles();
-    const { register, handleSubmit, reset } = useForm<InputRegister>();
+    const { register, handleSubmit } = useForm<InputRegister>();
 
     const dispatch = useDispatch();
 

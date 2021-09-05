@@ -31,9 +31,9 @@ export default function Header() {
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
     const { pathname } = useLocation()
-    const isActive = (pn: string) => {
-        if (pn === pathname) return 'active';
-    }
+    // const isActive = (pn: string) => {
+    //     if (pn === pathname) return 'active';
+    // }
 
     let { auth } = useSelector((state: RootStore) => state);
     const dispatch = useDispatch();
@@ -171,7 +171,7 @@ export default function Header() {
             <AppBar position="static">
                 <Toolbar style={{ display: 'flex', alignItems: 'center' }}>
                     <Typography className={classes.titleHeader} variant="h6" noWrap>
-                        <Link className={` ${classes.loginHeader}`} to="/">Như Ý Blog</Link>
+                        <Link className={` ${classes.loginHeader}`} to="/">Yang Hồ Trọng Blog</Link>
                     </Typography>
                     <Search classes={classes} />
                     <div className={classes.grow} />

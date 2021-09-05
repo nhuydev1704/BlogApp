@@ -20,3 +20,23 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#fb-login {
+  position: relative;
+}
+
+#fb-login > span {
+  font-size: 12px !important;
+}
+
+.abcRioButton.abcRioButtonBlue, #my-signin2, #fb-login {
+  /* height: 26px !important; */
+  width: 100% !important;
+  border: none !important;
+  border-radius: 4px;
+  margin-top: 10px;
+} 
+.abcRioButtonIcon, #fb-login > img {
+  border-radius: 50% !important;
+  position: absolute;
+}
