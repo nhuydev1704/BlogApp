@@ -1,10 +1,20 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Header from './components/global/Header/Header'
 import Grid from '@material-ui/core/Grid';
 import PageRender from './PageRender'
 
+import { refreshToken } from './redux/actions/authAction'
+import { useDispatch } from 'react-redux';
+
 const App = () => {
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(refreshToken())
+  }, [dispatch])
+
   return (
     <Router>
       <Header />

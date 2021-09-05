@@ -4,15 +4,17 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import GTranslateIcon from '@material-ui/icons/GTranslate';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import LoginPass from '../components/auth/LoginPass';
 import LoginSms from '../components/auth/LoginSms';
 import Loading from '../components/notification/Loading';
 import { login } from '../redux/actions/authAction';
+import { useSelector } from 'react-redux'
 
+import { RootStore } from '../utils/TypeScript'
 
 type Inputs = {
     account: string,
@@ -24,7 +26,7 @@ const useStyles = makeStyles({
         flexGrow: 1,
     },
     root: {
-        minWidth: 420,
+        width: 420,
         borderRadius: '10px'
     },
     title: {
@@ -70,6 +72,14 @@ const Login = () => {
     const { register, handleSubmit, reset } = useForm<Inputs>();
 
     const dispatch = useDispatch();
+
+    const history = useHistory()
+
+    const { auth } = useSelector((state: RootStore) => state)
+
+    useEffect(() => {
+        if (auth.access_token) history.push('/')
+    }, [auth.access_token, history]);
 
     const onSubmit: SubmitHandler<Inputs> = data => {
         dispatch(login(data))

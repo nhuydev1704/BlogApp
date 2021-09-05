@@ -23,8 +23,8 @@ const useStyles = makeStyles((theme: Theme) =>
             },
             marginRight: theme.spacing(2),
             marginLeft: 0,
-            width: `calc(28%) !important`,
-            [theme.breakpoints.up('sm')]: {
+            // width: `calc(30%) !important`,
+            [theme.breakpoints.up('md')]: {
                 marginLeft: theme.spacing(3),
                 width: 'auto',
             },

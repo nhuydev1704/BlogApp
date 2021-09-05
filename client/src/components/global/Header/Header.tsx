@@ -1,19 +1,25 @@
+import { LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 import AppBar from '@material-ui/core/AppBar';
+import Avatar from '@material-ui/core/Avatar';
 import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import AccountCircle from '@material-ui/icons/AccountCircle';
+import CreateIcon from '@material-ui/icons/Create';
+import HomeIcon from '@material-ui/icons/Home';
 import MailIcon from '@material-ui/icons/Mail';
-import MenuIcon from '@material-ui/icons/Menu';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useLocation } from 'react-router-dom';
+import { RootStore } from '../../../utils/TypeScript';
 import Search from '../Search';
 import useStyles from './style';
+import { logout } from '../../../redux/actions/authAction'
+
 
 
 export default function Header() {
@@ -24,10 +30,27 @@ export default function Header() {
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
+    const { pathname } = useLocation()
+    const isActive = (pn: string) => {
+        if (pn === pathname) return 'active';
+    }
+
+    let { auth } = useSelector((state: RootStore) => state);
+    const dispatch = useDispatch();
+
     const bfLoginLinks = [
-        { label: 'Đăng Ký', path: '/register' },
-        { label: 'Đăng nhập', path: '/login' },
+        { label: 'Đăng Ký', path: '/register', icon: <LogoutOutlined /> },
+        { label: 'Đăng nhập', path: '/login', icon: <LoginOutlined /> },
     ]
+
+    const afLoginLinks = [
+        { label: 'Trang chủ', path: '/', icon: <HomeIcon /> },
+        { label: 'Tạo Blog', path: '/createBlock', icon: <CreateIcon /> },
+    ]
+
+    let nameUser: any = auth?.user?.name
+
+    const navLinks = auth.access_token ? afLoginLinks : bfLoginLinks
 
     const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -51,17 +74,17 @@ export default function Header() {
         <Menu
             anchorEl={anchorEl}
             getContentAnchorEl={null}
-            anchorOrigin={{ vertical: 'center', horizontal: 'center' }}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             id={menuId}
             keepMounted
-            transformOrigin={{ vertical: 'center', horizontal: 'center' }}
+            transformOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
             <MenuItem onClick={handleMenuClose}>
                 <Link to="/profile" className={classes.account}>Thông tin</Link>
             </MenuItem>
-            <MenuItem onClick={handleMenuClose}>
+            <MenuItem onClick={() => { handleMenuClose(); dispatch(logout()); }}>
                 <Link to="/logout" className={classes.account}>Đăng xuất</Link>
             </MenuItem>
         </Menu >
@@ -69,96 +92,137 @@ export default function Header() {
 
     const mobileMenuId = 'primary-search-account-menu-mobile';
     const renderMobileMenu = (
-        <Menu
-            anchorEl={mobileMoreAnchorEl}
-            getContentAnchorEl={null}
-            anchorOrigin={{ vertical: 'center', horizontal: 'center' }}
-            id={mobileMenuId}
-            keepMounted
-            transformOrigin={{ vertical: 'center', horizontal: 'center' }}
-            open={isMobileMenuOpen}
-            onClose={handleMobileMenuClose}
-        >
-            <MenuItem>
-                <IconButton aria-label="show 4 new mails" color="inherit">
-                    <Badge badgeContent={4} color="secondary">
-                        <MailIcon />
-                    </Badge>
-                </IconButton>
-                <p>Messages</p>
-            </MenuItem>
-            <MenuItem>
-                <IconButton aria-label="show 11 new notifications" color="inherit">
-                    <Badge badgeContent={11} color="secondary">
-                        <NotificationsIcon />
-                    </Badge>
-                </IconButton>
-                <p>Notifications</p>
-            </MenuItem>
-            {/* <MenuItem onClick={handleProfileMenuOpen}> */}
-            <MenuItem>
-                <IconButton
-                    aria-label="account of current user"
-                    aria-controls="primary-search-account-menu"
-                    aria-haspopup="true"
-                    color="inherit"
-                >
-                    <AccountCircle />
-                </IconButton>
-                {
-                    bfLoginLinks.map((link, index) => (
-                        <Link className={classes.loginHeader} key={index} to={link.path}>{link.label}</Link>
-                    ))
-                }
-            </MenuItem>
-        </Menu>
+        auth.access_token ?
+            <Menu
+                anchorEl={mobileMoreAnchorEl}
+                getContentAnchorEl={null}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                id={mobileMenuId}
+                keepMounted
+                transformOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                open={isMobileMenuOpen}
+                onClose={handleMobileMenuClose}
+            >
+                <MenuItem>
+                    <IconButton aria-label="show 4 new mails" color="inherit">
+                        <Badge badgeContent={4} color="secondary">
+                            <MailIcon />
+                        </Badge>
+                    </IconButton>
+                    <Link style={{ color: '#333', fontWeight: 500 }} to={"/"}>Message</Link>
+                </MenuItem>
+                <MenuItem>
+                    <IconButton aria-label="show 11 new notifications" color="inherit">
+                        <Badge badgeContent={11} color="secondary">
+                            <NotificationsIcon />
+                        </Badge>
+                    </IconButton>
+                    <Link style={{ color: '#333', fontWeight: 500 }} to={"/"}>Thông báo</Link>
+                </MenuItem>
+                {navLinks.map((link, index) => (
+                    <MenuItem key={index}>
+                        <IconButton
+                            aria-label="account of current user"
+                            aria-controls="primary-search-account-menu"
+                            aria-haspopup="true"
+                            color="inherit"
+                        >
+                            {link?.icon}
+                        </IconButton>
+                        <Link style={{ color: '#333', fontWeight: 500 }} to={link.path}>{link.label}</Link>
+                    </MenuItem>
+                ))}
+                <MenuItem onClick={handleMenuClose}>
+                    <Link to="/profile" style={{ color: '#333', fontWeight: 500 }} className={classes.account}>Thông tin</Link>
+                </MenuItem>
+                <MenuItem onClick={() => { handleMenuClose(); dispatch(logout()); }}>
+                    <Link to="/logout" style={{ color: '#333', fontWeight: 500 }} className={classes.account}>Đăng xuất</Link>
+                </MenuItem>
+            </Menu>
+            :
+            <Menu
+                anchorEl={mobileMoreAnchorEl}
+                getContentAnchorEl={null}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                id={mobileMenuId}
+                keepMounted
+                transformOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                open={isMobileMenuOpen}
+                onClose={handleMobileMenuClose}
+            >
+                {navLinks.map((link, index) => (
+                    <MenuItem key={index}>
+                        <IconButton
+                            aria-label="account of current user"
+                            aria-controls="primary-search-account-menu"
+                            aria-haspopup="true"
+                            color="inherit"
+                        >
+                            {link?.icon}
+                        </IconButton>
+                        <Link style={{ color: '#333', fontWeight: 500 }} to={link.path}>{link.label}</Link>
+                    </MenuItem>
+                ))}
+            </Menu>
     );
 
     return (
         <div className={classes.grow}>
             <AppBar position="static">
-                <Toolbar>
-                    <IconButton
-                        edge="start"
-                        className={classes.menuButton}
-                        color="inherit"
-                        aria-label="open drawer"
-                    >
-                        <MenuIcon />
-                    </IconButton>
+                <Toolbar style={{ display: 'flex', alignItems: 'center' }}>
                     <Typography className={classes.titleHeader} variant="h6" noWrap>
-                        <Link className={` ${classes.loginHeader}`} to="/">Anh Quyền Blog</Link>
+                        <Link className={` ${classes.loginHeader}`} to="/">Như Ý Blog</Link>
                     </Typography>
                     <Search classes={classes} />
                     <div className={classes.grow} />
                     <div className={classes.sectionDesktop}>
-                        <IconButton aria-label="show 4 new mails" color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <MailIcon />
-                            </Badge>
-                        </IconButton>
-                        <IconButton aria-label="show 17 new notifications" color="inherit">
-                            <Badge badgeContent={17} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
-                        <IconButton
-                            edge="end"
-                            aria-label="account of current user"
-                            aria-controls={menuId}
-                            aria-haspopup="true"
-                            onClick={handleProfileMenuOpen}
-                            color="inherit"
-                        >
-                            <AccountCircle />
-                        </IconButton>
+                        {auth?.access_token
+                            &&
+                            (
+                                <React.Fragment>
+                                    <IconButton aria-label="show 4 new mails" color="inherit">
+                                        <Badge badgeContent={4} color="secondary">
+                                            <MailIcon />
+                                        </Badge>
+                                    </IconButton>
+                                    <IconButton aria-label="show 17 new notifications" color="inherit">
+                                        <Badge badgeContent={17} color="secondary">
+                                            <NotificationsIcon />
+                                        </Badge>
+                                    </IconButton>
+                                </React.Fragment>
+                            )
+                        }
                         <Typography className={`${classes.titleHeader} ${classes.titleLogin}`} variant="h6" noWrap>
                             {
-                                bfLoginLinks.map((link, index) => (
+                                navLinks.map((link, index) => (
                                     <Link className={classes.loginHeader} key={index} to={link.path}>{link.label}</Link>
                                 ))
                             }
                         </Typography>
+                        {nameUser &&
+                            <IconButton
+                                edge="end"
+                                aria-label="account of current user"
+                                aria-controls={menuId}
+                                aria-haspopup="true"
+                                onClick={handleProfileMenuOpen}
+                                color="inherit"
+                                style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}
+                            >
+                                {/* <AccountCircle /> */}
+                                <Avatar src={auth.user?.avatar} alt="avatar" />
+                                <Typography
+                                    className={`${classes.titleHeader} ${classes.titleLogin}`}
+                                    variant="h6"
+                                    noWrap
+                                    style={{ color: 'white', fontSize: '1rem', paddingLeft: '2px', paddingTop: '2.5px' }}
+                                >
+                                    {` ${nameUser}`}
+                                </Typography>
+                            </IconButton>
+                        }
+
                     </div>
                     <div className={classes.sectionMobile}>
                         <IconButton
@@ -174,7 +238,7 @@ export default function Header() {
                 </Toolbar>
             </AppBar>
             {renderMobileMenu}
-            {renderMenu}
+            {auth?.access_token && renderMenu}
         </div >
     );
 }

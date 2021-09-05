@@ -9,10 +9,8 @@ const Notification = () => {
     if (alert.success && alert.success !== "") {
         variant = "success"
         // enqueueSnackbar(alert.success, { variant })
-        console.log("helo")
     } else if (alert.errors && alert.errors !== "") {
         variant = "error"
-        console.log("helo")
 
         // enqueueSnackbar(alert.errors, { variant })
     }

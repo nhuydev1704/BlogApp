@@ -3,7 +3,7 @@ import { IUser } from '../../utils/TypeScript'
 export const AUTH = 'AUTH'
 
 export interface IAuth {
-    token?: string
+    access_token?: string
     user?: IUser
 }
 

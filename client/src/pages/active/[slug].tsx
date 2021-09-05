@@ -10,7 +10,6 @@ const ActiveEmail = () => {
     const [error, setError] = useState("")
 
     const { slug }: IParams = useParams()
-    console.log(slug)
 
     useEffect(() => {
         if (slug) {
@@ -21,7 +20,7 @@ const ActiveEmail = () => {
     }, [slug])
 
     return (
-        <div style={{display: 'flex', justifyContent: 'center', height: '70vh', alignItems: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', height: '70vh', alignItems: 'center' }}>
             <Card style={{ width: 400, height: 300, borderRadius: '10px', boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px' }} variant="outlined">
                 {success && <Result
                     status="success"
