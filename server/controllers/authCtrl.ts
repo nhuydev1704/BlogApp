@@ -190,7 +190,7 @@ const authCtrl = {
         try {
             const { phone, code } = req.body
             const data = await verifyOTP(phone, code)
-            if (!data?.valid) return res.status(400).json({ msg: "Chữa xác thực." });
+            if (!data?.valid) return res.status(400).json({ msg: "Xác thực thất bại." });
 
             const password = phone + 'your phone secrect password'
             const passwordHash = await bcrypt.hash(password, 12)

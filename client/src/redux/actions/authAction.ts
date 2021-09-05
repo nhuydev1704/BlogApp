@@ -152,7 +152,6 @@ export const loginSMS = (accountRes: IUserLogin) => async (dispatch: Dispatch<IA
 
     try {
         dispatch({ type: ALERT, payload: { loading: true } })
-        console.log(phone)
 
         const url = `login_sms`
         const res = await postAPI(url, { phone })
@@ -183,13 +182,13 @@ export const verifySMS = async (phone: string, dispatch: Dispatch<IAuthType | IA
         dispatch({ type: ALERT, payload: { loading: false } })
         localStorage.setItem('logged', 'nguyennhuy')
     } catch (err: any) {
-        dispatch({ type: ALERT, payload: { loading: false } })
         notification['error']({
             message: "Blog Nguyễn Như Ý",
             description: err?.response?.data?.msg,
         });
         setTimeout(() => {
             verifySMS(phone, dispatch)
-        }, 100)
+        }, 300)
+
     }
 }
