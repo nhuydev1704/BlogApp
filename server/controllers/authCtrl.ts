@@ -11,9 +11,9 @@ import fetch from 'node-fetch'
 
 import { OAuth2Client } from "google-auth-library"
 
-const CLIENT_URL = `${process.env.BASE_URL}`
+const CLIENT_URL = `${process.env.local.BASE_URL}`
 
-const client = new OAuth2Client(`${process.env.MAIL_CLIENT_ID}`)
+const client = new OAuth2Client(`${process.env.local.MAIL_CLIENT_ID}`)
 
 const authCtrl = {
     register: async (req: Request, res: Response) => {
@@ -48,7 +48,7 @@ const authCtrl = {
         try {
             const { active_token } = req.body
 
-            const decoded = <IDecodedToken>jwt.verify(active_token, `${process.env.ACTIVE_TOKEN_SECRET}`)
+            const decoded = <IDecodedToken>jwt.verify(active_token, `${process.env.local.ACTIVE_TOKEN_SECRET}`)
 
             const { newUser } = decoded
 
@@ -94,7 +94,7 @@ const authCtrl = {
             const rf_token = req.cookies.refreshtoken
             if (!rf_token) return res.status(400).json({ msg: "Hãy đăng nhập trước" })
 
-            const decoded = <IDecodedToken>jwt.verify(rf_token, `${process.env.REFRESH_TOKEN_SECRET}`)
+            const decoded = <IDecodedToken>jwt.verify(rf_token, `${process.env.local.REFRESH_TOKEN_SECRET}`)
             if (!decoded.id) return res.status(400).json({ msg: "Hãy đăng nhập trước" })
 
             const user = await Users.findById(decoded.id).select("-password")
@@ -116,7 +116,7 @@ const authCtrl = {
             const { id_token } = req.body
 
             const verify = await client.verifyIdToken({
-                idToken: id_token, audience: `${process.env.MAIL_CLIENT_ID}`
+                idToken: id_token, audience: `${process.env.local.MAIL_CLIENT_ID}`
             })
 
             const {

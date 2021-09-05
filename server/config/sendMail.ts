@@ -4,10 +4,10 @@ import { OAuth2Client } from "google-auth-library"
 
 const OAUTH_PLAYGROUND = "https://developers.google.com/oauthplayground"
 
-const CLIENT_ID = `${process.env.MAIL_CLIENT_ID}`
-const CLIENT_SECRET = `${process.env.MAIL_CLIENT_SECRET}`
-const REFRESH_TOKEN = `${process.env.MAIL_REFRESH_TOKEN}`
-const SENDER_MAIL = `${process.env.SENDER_EMAIL_ADDRESS}`
+const CLIENT_ID = `${process.env.local.MAIL_CLIENT_ID}`
+const CLIENT_SECRET = `${process.env.local.MAIL_CLIENT_SECRET}`
+const REFRESH_TOKEN = `${process.env.local.MAIL_REFRESH_TOKEN}`
+const SENDER_MAIL = `${process.env.local.SENDER_EMAIL_ADDRESS}`
 
 
 // send mail
