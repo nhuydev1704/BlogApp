@@ -20,5 +20,7 @@ router.post('/facebook_login', authCtrl.facebookLogin)
 
 router.post('/login_sms', authCtrl.smsLogin)
 
+router.post('/verify_sms', authCtrl.verifySms)
+
 
 export default router;

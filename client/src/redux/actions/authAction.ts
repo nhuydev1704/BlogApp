@@ -156,22 +156,40 @@ export const loginSMS = (accountRes: IUserLogin) => async (dispatch: Dispatch<IA
 
         const url = `login_sms`
         const res = await postAPI(url, { phone })
-        if (res.status === 200) {
-            notification['success']({
-                message: "Blog Nguyễn Như Ý",
-                description: res.data.msg,
-            });
-        }
-
-        dispatch({ type: ALERT, payload: { loading: false } })
-
-        // dispatch({ type: AUTH, payload: res.data })
-        // // localStorage.setItem('logged', 'nguyennhuy')
+        if (!res.data.valid)
+            verifySMS(phone, dispatch)
     } catch (err: any) {
         dispatch({ type: ALERT, payload: { loading: false } })
         notification['error']({
             message: "Blog Nguyễn Như Ý",
             description: err?.response?.data?.msg,
         });
+    }
+}
+
+export const verifySMS = async (phone: string, dispatch: Dispatch<IAuthType | IAlertType>) => {
+    const code = prompt('Nhập mã OTP')
+    if (!code) return dispatch({ type: ALERT, payload: { loading: false } });
+    try {
+        const url = `verify_sms`
+        const res = await postAPI(url, { phone, code })
+        if (res.status === 200) {
+            notification['success']({
+                message: "Blog Nguyễn Như Ý",
+                description: res.data.msg,
+            });
+        }
+        dispatch({ type: AUTH, payload: res.data })
+        dispatch({ type: ALERT, payload: { loading: false } })
+        localStorage.setItem('logged', 'nguyennhuy')
+    } catch (err: any) {
+        dispatch({ type: ALERT, payload: { loading: false } })
+        notification['error']({
+            message: "Blog Nguyễn Như Ý",
+            description: err?.response?.data?.msg,
+        });
+        setTimeout(() => {
+            verifySMS(phone, dispatch)
+        }, 100)
     }
 }

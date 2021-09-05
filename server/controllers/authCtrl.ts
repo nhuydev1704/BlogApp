@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken'
 import { generateActiveToken, generateAccessToken, generateRefreshToken } from "../config/generateToken"
 import sendEmail from '../config/sendMail'
 import { validateEmail, validPhone } from "../middleware/valid"
-import { sendSms } from "../config/sendSMS"
+import { sendSms, smsOTP, verifyOTP } from "../config/sendSMS"
 import { IDecodedToken, IUser, IGgPayload, IUserParams } from "../config/interface"
 import fetch from 'node-fetch'
 
@@ -179,24 +179,32 @@ const authCtrl = {
     smsLogin: async (req: Request, res: Response) => {
         try {
             const { phone } = req.body
+            const data = await smsOTP(phone, 'sms')
 
-            console.log(phone)
+            res.json(data)
+        } catch (err: any) {
+            return res.status(500).json({ msg: err.message })
+        }
+    },
+    verifySms: async (req: Request, res: Response) => {
+        try {
+            const { phone, code } = req.body
+            const data = await verifyOTP(phone, code)
+            if (!data?.valid) return res.status(400).json({ msg: "Chữa xác thực." });
 
-            // const password = email + 'your facebook secrect password'
-            // const passwordHash = await bcrypt.hash(password, 12)
+            const password = phone + 'your phone secrect password'
+            const passwordHash = await bcrypt.hash(password, 12)
 
-            // const user = await Users.findOne({ account: email })
+            const user = await Users.findOne({ account: phone })
 
-            // if (user) {
-            //     loginUser(user, password, res)
-            // } else {
-            //     const user = {
-            //         name, account: email, password: passwordHash, avatar: picture.data.url, type: 'login'
-            //     }
-
-            //     registerUser(user, res)
-            // }
-
+            if (user) {
+                loginUser(user, password, res)
+            } else {
+                const user = {
+                    name: '0'.concat(phone.slice(3)), account: phone, password: passwordHash, type: 'login'
+                }
+                registerUser(user, res)
+            }
         } catch (err: any) {
             return res.status(500).json({ msg: err.message })
         }
