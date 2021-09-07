@@ -82,7 +82,7 @@ export default function Header() {
             onClose={handleMenuClose}
         >
             <MenuItem onClick={handleMenuClose}>
-                <Link to="/profile" className={classes.account}>Thông tin</Link>
+                <Link to={`/profile/${auth?.user?._id}`} className={classes.account}>Thông tin</Link>
             </MenuItem>
             <MenuItem onClick={() => { handleMenuClose(); dispatch(logout()); }}>
                 <Link to="/logout" className={classes.account}>Đăng xuất</Link>
@@ -171,7 +171,7 @@ export default function Header() {
             <AppBar position="static">
                 <Toolbar style={{ display: 'flex', alignItems: 'center' }}>
                     <Typography className={classes.titleHeader} variant="h6" noWrap>
-                        <Link className={` ${classes.loginHeader}`} to="/">Yang Hồ Trọng Blog</Link>
+                        <Link className={` ${classes.loginHeader}`} to="/">Blog Application</Link>
                     </Typography>
                     <Search classes={classes} />
                     <div className={classes.grow} />

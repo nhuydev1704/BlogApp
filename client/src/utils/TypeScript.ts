@@ -1,8 +1,9 @@
 import rootReducer from '../redux/reducers/index'
+import { ChangeEvent } from 'react'
 
 export type RootStore = ReturnType<typeof rootReducer>
 
-
+export type InputChange = ChangeEvent<HTMLInputElement>
 
 export interface IParams {
     page: string
@@ -26,6 +27,10 @@ export interface IUser extends IUserLogin {
     type: string
     updatedAt: string
     _id: string
+}
+
+export interface IUserProfile {
+    avatar: string | File
 }
 
 export interface IAlert {

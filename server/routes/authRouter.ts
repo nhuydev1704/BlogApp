@@ -22,5 +22,6 @@ router.post('/login_sms', authCtrl.smsLogin)
 
 router.post('/verify_sms', authCtrl.verifySms)
 
+router.get('/getAll_user', authCtrl.getAllUser)
 
 export default router;

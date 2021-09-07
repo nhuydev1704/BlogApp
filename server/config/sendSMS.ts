@@ -1,9 +1,9 @@
 import { Twilio } from 'twilio'
 
-const accountSid = `${process.env.local.TWILIO_ACCOUNT_SID}`;
-const authToken = `${process.env.local.TWILIO_AUTH_TOKEN}`;
-const from = `${process.env.local.TWILIO_PHONE_NUMBER}`;
-const serviceID = `${process.env.local.TWILIO_SERVICE_ID}`;
+const accountSid = `${process.env.TWILIO_ACCOUNT_SID}`;
+const authToken = `${process.env.TWILIO_AUTH_TOKEN}`;
+const from = `${process.env.TWILIO_PHONE_NUMBER}`;
+const serviceID = `${process.env.TWILIO_SERVICE_ID}`;
 
 const client = new Twilio(accountSid, authToken)
 
