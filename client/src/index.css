@@ -42,9 +42,9 @@ code {
 }
 
 .user_avatar {
-  overflow: hidden;
+  overflow: hidden !important;
   border-radius: 50%;
-  position: relative;
+  position: relative !important;
   margin: 0 auto;
   margin-bottom: 15px;
   border: 1px solid #ddd;
@@ -53,17 +53,19 @@ code {
 
 .image_info{
   position: absolute;
-  bottom: -15%;
-  left: 0;
-  width: 100%;
-  height: 50%;
+  bottom: 10%;
+  left: 50%;
+  transform: translate(-50%);
+  width: 110px;
+  height: 36px;
   text-align: center;
   color: rgb(225, 60, 93);
   transition: 0.3s ease-in-out;
-  background: #fff5;
-  z-index: 99999;
+  background: rgba(225, 219, 219, 0.333);
   transition: all ease-in .2s;
-  opacity: .7;
+  opacity: .9;
+  border-bottom-left-radius: 50px;
+  border-bottom-right-radius: 50px;
 }
 
  #file_up{

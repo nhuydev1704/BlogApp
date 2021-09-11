@@ -1,21 +1,25 @@
-import React, { useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { IParams, RootStore, InputChange, IUserProfile } from '../../utils/TypeScript'
-import { useSelector } from 'react-redux'
-import { Row, Col, } from 'antd';
-import Card from '@material-ui/core/Card';
-import Avatar from '@material-ui/core/Avatar';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import FormInfo from '../auth/FormInfor';
-import NotFound from '../global/NotFound'
 import { CameraOutlined } from '@ant-design/icons';
+import Avatar from '@material-ui/core/Avatar';
+import { Col, Row } from 'antd';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateUser } from '../../redux/actions/profileAction';
+import { InputChange, IUserProfile, RootStore } from '../../utils/TypeScript';
+import FormInfo from '../auth/FormInfor';
 const UserInfo = (props: any) => {
 
     const { auth } = useSelector((state: RootStore) => state);
-    const [fileAvatar, setFileAvatar] = useState<IUserProfile | any>('')
+    const [fileAvatar, setFileAvatar] = useState<IUserProfile | any>('');
+    const dispatch = useDispatch();
 
     const handleSubmit = (data: any) => {
-        const dataPush = { ...data, avartar: fileAvatar }
+        const dataPush = { ...data, avatar: fileAvatar }
+
+        const { name, avatar } = dataPush
+
+        if (avatar || name !== auth?.user?.name)
+            dispatch(updateUser((avatar as File), name, auth))
+
         console.log(dataPush)
     }
 
@@ -37,7 +41,10 @@ const UserInfo = (props: any) => {
                 Bạn đăng nhập bằng facebook, google không sử dụng được chức năng
             </Col>
             <Col span={24} style={{ display: 'flex', justifyContent: 'center' }}>
-                <Avatar alt="Remy Sharp" src={fileAvatar ? URL.createObjectURL(fileAvatar) : auth?.user?.avatar} className={`${props.classes.large} user_avatar`} />
+                <Avatar alt="Remy Sharp"
+                    src={fileAvatar ? URL.createObjectURL(fileAvatar) : auth?.user?.avatar}
+                    className={`${props.classes.large} user_avatar`}
+                />
                 <span className="image_info">
                     <CameraOutlined style={{ fontSize: '26px', marginTop: '6px' }} />
                     <input type="file" accept="image/*"

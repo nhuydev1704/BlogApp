@@ -1,4 +1,5 @@
 import { Document } from 'mongoose'
+import { Request } from 'express'
 
 export interface IUser extends Document {
     name: string
@@ -38,4 +39,8 @@ export interface IUserParams {
     avatar?: string
     type: string
     _doc?: Object
+}
+
+export interface IReqAuth extends Request {
+    user?: IUser
 }
