@@ -38,7 +38,7 @@ const UserInfo = (props: any) => {
     return (
         <Row justify="center">
             <Col span={24} style={{ textAlign: 'center', fontSize: '.8rem', marginTop: '6px', color: 'red' }}>
-                {auth?.user?.type !== 'register' && `Bạn đang đăng nhập bằng ${auth?.user?.type} không sử dụng được chức năng`}
+                {auth?.user?.type !== 'register' && `Bạn đang đăng nhập bằng ${auth?.user?.type} không thể đổi mật khẩu`}
             </Col>
             <Col span={24} style={{ display: 'flex', justifyContent: 'center' }}>
                 <Avatar alt="Remy Sharp"
