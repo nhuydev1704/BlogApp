@@ -72,13 +72,12 @@ const FormInfo = (props: any) => {
                 label="Mật khẩu"
                 rules={[
                     {
-                        required: true,
                         message: 'Hãy nhập mật khẩu!',
                     },
                 ]}
                 hasFeedback
             >
-                <Input.Password />
+                <Input.Password disabled={auth?.user?.type === 'register' ? false : true} />
             </Form.Item>
 
             <Form.Item
@@ -88,7 +87,6 @@ const FormInfo = (props: any) => {
                 hasFeedback
                 rules={[
                     {
-                        required: true,
                         message: 'Hãy xác nhận mật khẩu xác thực!',
                     },
                     ({ getFieldValue }) => ({
@@ -101,7 +99,7 @@ const FormInfo = (props: any) => {
                     }),
                 ]}
             >
-                <Input.Password />
+                <Input.Password disabled={auth?.user?.type === 'register' ? false : true} />
             </Form.Item>
             <Form.Item>
                 <Button style={{ width: '100%' }} type="primary" htmlType="submit">

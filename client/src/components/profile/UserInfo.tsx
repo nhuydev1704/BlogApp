@@ -3,7 +3,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { Col, Row } from 'antd';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateUser } from '../../redux/actions/profileAction';
+import { updateUser, resetPassword } from '../../redux/actions/profileAction';
 import { InputChange, IUserProfile, RootStore } from '../../utils/TypeScript';
 import FormInfo from '../auth/FormInfor';
 const UserInfo = (props: any) => {
@@ -14,13 +14,13 @@ const UserInfo = (props: any) => {
 
     const handleSubmit = (data: any) => {
         const dataPush = { ...data, avatar: fileAvatar }
-
-        const { name, avatar } = dataPush
+        const { name, avatar, password } = dataPush
 
         if (avatar || name !== auth?.user?.name)
             dispatch(updateUser((avatar as File), name, auth))
 
-        console.log(dataPush)
+        if (password && auth.access_token)
+            dispatch(resetPassword(password, auth.access_token))
     }
 
     // const {name, password, account, avatar, } = auth
@@ -38,7 +38,7 @@ const UserInfo = (props: any) => {
     return (
         <Row justify="center">
             <Col span={24} style={{ textAlign: 'center', fontSize: '.8rem', marginTop: '6px', color: 'red' }}>
-                Bạn đăng nhập bằng facebook, google không sử dụng được chức năng
+                {auth?.user?.type !== 'register' && `Bạn đang đăng nhập bằng ${auth?.user?.type} không sử dụng được chức năng`}
             </Col>
             <Col span={24} style={{ display: 'flex', justifyContent: 'center' }}>
                 <Avatar alt="Remy Sharp"

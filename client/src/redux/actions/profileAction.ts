@@ -60,3 +60,27 @@ export const updateUser = (avatar: File, name: string, auth: IAuth) =>
             });
         }
     }
+
+export const resetPassword = (password: string, token: string) =>
+    async (dispatch: Dispatch<IAuthType | IAlertType>) => {
+        try {
+            dispatch({ type: ALERT, payload: { loading: true } })
+
+            const res = await patchAPI('reset_password', { password }, token)
+            if (res.status === 200) {
+                notification['success']({
+                    message: "Blog Nguyễn Như Ý",
+                    description: res.data.msg,
+                });
+            }
+
+            dispatch({ type: ALERT, payload: { loading: false } })
+
+        } catch (err: any) {
+            dispatch({ type: ALERT, payload: { loading: false } })
+            notification['error']({
+                message: "Blog Nguyễn Như Ý",
+                description: err?.response?.data?.msg,
+            });
+        }
+    }
