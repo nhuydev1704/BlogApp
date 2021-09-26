@@ -222,7 +222,13 @@ const authCtrl = {
 
 const loginUser = async (user: IUser, password: string, res: Response) => {
     const isMatch = await bcrypt.compare(password, user.password)
-    if (!isMatch) return res.status(400).json({ msg: "Mật khẩu không chính xác." })
+    if (!isMatch) {
+        let msgErr = user.type === 'register' ? 'Mật khẩu không chính xác.' : `Tài khoản đã đăng nhập bằng ${user.type}`
+
+        return res.status(400).json({
+            msg: msgErr
+        })
+    }
 
     const access_token = generateAccessToken({ id: user._id })
     const refresh_token = generateRefreshToken({ id: user._id })

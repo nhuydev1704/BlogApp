@@ -23,6 +23,8 @@ const userCtrl = {
     resetPassword: async (req: IReqAuth, res: Response) => {
         if (!req.user) return res.status(400).json({ msg: "Chưa xác thực" })
 
+        if (req.user.type !== 'register') return res.status(400).json({ msg: "Đừng nghịch linh tinh 😅" })
+
         try {
             const { password } = req.body
             const passwordHash = await bcrypt.hash(password, 12)
