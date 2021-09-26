@@ -134,7 +134,7 @@ const authCtrl = {
                 loginUser(user, password, res)
             } else {
                 const user = {
-                    name, account: email, password: passwordHash, avatar: picture, type: 'login'
+                    name, account: email, password: passwordHash, avatar: picture, type: 'google'
                 }
 
                 registerUser(user, res)
@@ -166,7 +166,7 @@ const authCtrl = {
                 loginUser(user, password, res)
             } else {
                 const user = {
-                    name, account: email, password: passwordHash, avatar: picture.data.url, type: 'login'
+                    name, account: email, password: passwordHash, avatar: picture.data.url, type: 'facebook'
                 }
 
                 registerUser(user, res)
@@ -201,7 +201,7 @@ const authCtrl = {
                 loginUser(user, password, res)
             } else {
                 const user = {
-                    name: '0'.concat(phone.slice(3)), account: phone, password: passwordHash, type: 'login'
+                    name: '0'.concat(phone.slice(3)), account: phone, password: passwordHash, type: 'sms'
                 }
                 registerUser(user, res)
             }
