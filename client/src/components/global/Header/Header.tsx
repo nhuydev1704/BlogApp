@@ -46,6 +46,9 @@ export default function Header() {
     const afLoginLinks = [
         { label: 'Trang chủ', path: '/', icon: <HomeIcon /> },
         { label: 'Tạo Blog', path: '/createBlock', icon: <CreateIcon /> },
+        auth?.user?.role === 'admin' ?
+            { label: 'Danh mục', path: '/category', icon: <CreateIcon /> }
+            : {},
     ]
 
     let nameUser: any = auth?.user?.name
@@ -129,7 +132,7 @@ export default function Header() {
                         >
                             {link?.icon}
                         </IconButton>
-                        <Link style={{ color: '#333', fontWeight: 500 }} to={link.path}>{link.label}</Link>
+                        <Link style={{ color: '#333', fontWeight: 500 }} to={link?.path!}>{link?.label}</Link>
                     </MenuItem>
                 ))}
                 <MenuItem onClick={handleMenuClose}>
@@ -160,7 +163,7 @@ export default function Header() {
                         >
                             {link?.icon}
                         </IconButton>
-                        <Link style={{ color: '#333', fontWeight: 500 }} to={link.path}>{link.label}</Link>
+                        <Link style={{ color: '#333', fontWeight: 500 }} to={link?.path!}>{link?.label}</Link>
                     </MenuItem>
                 ))}
             </Menu>
@@ -196,7 +199,7 @@ export default function Header() {
                         <Typography className={`${classes.titleHeader} ${classes.titleLogin}`} variant="h6" noWrap>
                             {
                                 navLinks.map((link, index) => (
-                                    <Link className={classes.loginHeader} key={index} to={link.path}>{link.label}</Link>
+                                    <Link className={classes.loginHeader} key={index} to={link?.path!}>{link.label}</Link>
                                 ))
                             }
                         </Typography>
