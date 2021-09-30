@@ -13,8 +13,6 @@ import { get } from 'lodash';
 
 const ListCategory = (props: any) => {
     const dataCategories = get(props, 'dataCategories', []);
-    console.log(dataCategories)
-
     return (
         <Col span={24}>
         {
@@ -23,7 +21,7 @@ const ListCategory = (props: any) => {
                 return <Paper
                             key={item._id!}
                             elevation={0}
-                            style={{ padding: '0 10px', border: '1px solid #ccc' }}
+                            style={{ padding: '0 10px', border: '1px solid #ccc', margin: '8px 0' }}
                         >
                             <Row justify="space-between" align="middle">
                                 {item.name}
@@ -43,7 +41,7 @@ const ListCategory = (props: any) => {
                                     </Tooltip>
                                 </Popconfirm>
                                 <Tooltip title="Sửa" placement="top">
-                                    <IconButton onClick={() => props.onEdit(item.name!)} color="primary">
+                                    <IconButton onClick={() => props.onEdit(item.name!, item?._id!)} color="primary">
                                         <EditTwoToneIcon />
                                     </IconButton>
                                 </Tooltip>

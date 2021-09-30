@@ -12,83 +12,107 @@ import { Popconfirm } from 'antd';
 import ListCategory from '../components/category/ListCategory'
 import { SubmitHandler, useForm } from "react-hook-form";
 import { getAPI } from '../utils/FetchData';
-import { ICategory } from '../utils/TypeScript'
+import { ICategory } from '../utils/TypeScript';
+import {createCategory, deleteCategory, updateCategory } from '../redux/actions/categoryAction';
+import { useSelector } from 'react-redux'
+import { RootStore } from '../utils/TypeScript'
+import NotFound from '../components/global/NotFound'
+import { useDispatch } from 'react-redux';
+import Loading from '../components/notification/Loading';
 
 type Inputs = {
     name: string,
+    id: string
 };
 
 const Category = () => {
-    const [dataCategories, setDataCategories] = useState([]);
     const [nameCategory, setNameCategory] = useState('');
-    const [dataEdit, setDataEdit] = useState<ICategory | null>(null);
+    const [isEdit, setIsEdit] = useState(false)
     const { register, handleSubmit, reset, setValue } = useForm<Inputs>();
 
+    const { auth, category } = useSelector((state: RootStore) => state);
+    const dispatch = useDispatch();
+
     const onSubmit: SubmitHandler<Inputs> = data => {
-        console.log(data)
-    }
-
-    useEffect(()=> {
-        const getCategories = async () => {
-            const res = await getAPI('category');
-            setDataCategories(res.data.categories)
+        if(!auth.access_token || !data.name) {
+            setIsEdit(false);
+            reset();
+            return
+        };
+        if(data.id) {
+            dispatch(updateCategory({_id: data?.id, name: data.name}, auth.access_token))
+            setIsEdit(false)
+            reset()
+        } else {
+            dispatch(createCategory(data.name, auth.access_token))
+            reset()
         }
-
-        getCategories();
-    },[])
-
+        setNameCategory('')
+    }
     const onConfirm = (id:string) => {
-        
+        if(!auth.access_token || !id) return;
+        dispatch(deleteCategory(id, auth.access_token))
     }
 
-    const onEdit = async (name:string) => {
+    const onEdit = async (name:string, id: string) => {
         setNameCategory(name)
+        setIsEdit(true)
         setValue("name", name)
-        console.log(name)
+        setValue("id", id)
     }
+
+    const handleBlur =() => {
+        setIsEdit(false);
+        reset();
+    }
+
+    if(auth.user?.role !== 'admin') return <NotFound />
 
     return (
-        <Row justify="center" style={{ marginTop: '40px' }}>
-            <Col span={12}>
-                <Typography variant="h4" gutterBottom style={{ textAlign: 'center' }}>
-                    Danh mục Blogs
-                </Typography>
-                <Row justify="center">
-                    <Col span={24}>
-                        <form noValidate autoComplete="off">
-                            <Row
-                                align="bottom"
-                                justify="space-between"
-                                gutter={[16, 16]}
-                            >
-                                <Col span={21}>
-                                    <TextField 
-                                    {...register("name")} 
-                                    style={{ width: '100%' }} 
-                                    id="standard-basic" 
-                                    label="Nhập tên danh mục"
-                                    value={nameCategory}
-                                    onChange={e => setNameCategory(e.target.value)}
-                                    />
-                                </Col>
-                                <Col span={3}>
-                                    <Button onClick={handleSubmit(onSubmit)} variant="contained" color="primary">
-                                        Thêm
-                                    </Button>
-                                </Col>
+        <Loading>
+            <Row justify="center" style={{ marginTop: '40px' }}>
+                <Col span={12}>
+                    <Typography variant="h4" gutterBottom style={{ textAlign: 'center' }}>
+                        Danh mục Blogs
+                    </Typography>
+                    <Row justify="center">
+                        <Col span={24}>
+                            <form noValidate autoComplete="off">
+                                <Row
+                                    align="bottom"
+                                    justify="space-between"
+                                    gutter={[16, 16]}
+                                >
+                                    <Col span={21}>
+                                        <TextField 
+                                        {...register("name")} 
+                                        style={{ width: '100%' }} 
+                                        id="standard-basic" 
+                                        label="Nhập tên danh mục"
+                                        value={nameCategory}
+                                        onBlur={handleBlur}
+                                        onChange={e => setNameCategory(e.target.value)}
+                                        />
+                                    </Col>
+                                    <Col span={3}>
+                                        <Button onClick={handleSubmit(onSubmit)} variant="contained" color="primary">
+                                            {isEdit ? 'Sửa' : 'Thêm'}
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </form>
+                            <Row justify="center" style={{ marginTop: '20px' }}>
+                                <ListCategory
+                                 dataCategories={category} 
+                                 onConfirm={onConfirm}
+                                 onEdit={onEdit}
+                                 />
                             </Row>
-                        </form>
-                        <Row justify="center" style={{ marginTop: '20px' }}>
-                            <ListCategory
-                             dataCategories={dataCategories} 
-                             onConfirm={onConfirm}
-                             onEdit={onEdit}
-                             />
-                        </Row>
-                    </Col>
-                </Row>
-            </Col>
-        </Row >
+                        </Col>
+                    </Row>
+                </Col>
+            </Row>
+        </Loading>
     )
 }
 
