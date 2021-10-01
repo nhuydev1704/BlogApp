@@ -5,6 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import PageRender from './PageRender'
 
 import { refreshToken } from './redux/actions/authAction'
+import {getCategory} from './redux/actions/categoryAction'
 import { useDispatch } from 'react-redux';
 
 const App = () => {
@@ -13,6 +14,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(refreshToken())
+    dispatch(getCategory())
   }, [dispatch])
 
   return (
