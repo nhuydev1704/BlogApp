@@ -3,6 +3,7 @@ import { Dispatch } from "redux"
 import { ALERT, IAlertType } from '../types/alertType'
 import { notification } from 'antd'
 import { checkImage, imageUpload } from '../../utils/imageUpload'
+import { postAPI, getAPI, deleteAPI, patchAPI } from '../../utils/FetchData'
 
 export const createBlog = (dataBlog: IBlog, token: string) => async (dispatch: Dispatch<IAlertType>) => {
 	let url = '';
@@ -15,7 +16,15 @@ export const createBlog = (dataBlog: IBlog, token: string) => async (dispatch: D
 		} else {
 			url = dataBlog.thumbnail
 		}
+
 		const newBlog = { ...dataBlog, thumbnail: url }
+		const res = await postAPI('blog', newBlog, token)
+		if (res.status === 200) {
+			notification['success']({
+				message: "Blog Nguyễn Như Ý",
+				description: res.data.msg,
+			});
+		}
 
 		dispatch({ type: ALERT, payload: { loading: false } })
 	} catch (err: any) {
