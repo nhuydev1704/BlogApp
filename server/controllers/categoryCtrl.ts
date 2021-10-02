@@ -11,7 +11,7 @@ const categoryCtrl = {
         if (req.user.role !== 'admin') res.status(400).json({ msg: "Bạn không phải admin" })
 
         try {
-            const name = req.body.name.toLowerCase()
+            const name = req.body.name
 
             const newCategory = new Categories({ name })
             await newCategory.save()

@@ -20,8 +20,6 @@ import Search from '../Search';
 import useStyles from './style';
 import { logout } from '../../../redux/actions/authAction'
 
-
-
 export default function Header() {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -45,7 +43,7 @@ export default function Header() {
 
     const afLoginLinks = [
         { label: 'Trang chủ', path: '/', icon: <HomeIcon /> },
-        { label: 'Tạo Blog', path: '/createBlock', icon: <CreateIcon /> },
+        { label: 'Tạo Blog', path: '/create_blog', icon: <CreateIcon /> },
         auth?.user?.role === 'admin' ?
             { label: 'Danh mục', path: '/category', icon: <CreateIcon /> }
             : {},

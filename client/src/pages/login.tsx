@@ -95,7 +95,6 @@ const Login = () => {
         setTypeLogin(!typeLogin);
     }
 
-
     return (
         <>
             <Grid

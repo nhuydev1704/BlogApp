@@ -1,24 +1,15 @@
-import React, { useState, useEffect} from 'react'
-import { Row, Col } from 'antd'
-import TextField from '@material-ui/core/TextField';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import DeleteForeverTwoToneIcon from '@material-ui/icons/DeleteForeverTwoTone';
-import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import { Popconfirm } from 'antd';
-import ListCategory from '../components/category/ListCategory'
+import { Col, Row } from 'antd';
 import { SubmitHandler, useForm } from "react-hook-form";
-import { getAPI } from '../utils/FetchData';
-import { ICategory } from '../utils/TypeScript';
-import {createCategory, deleteCategory, updateCategory } from '../redux/actions/categoryAction';
-import { useSelector } from 'react-redux'
-import { RootStore } from '../utils/TypeScript'
-import NotFound from '../components/global/NotFound'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import ListCategory from '../components/category/ListCategory';
+import NotFound from '../components/global/NotFound';
 import Loading from '../components/notification/Loading';
+import { createCategory, deleteCategory, updateCategory } from '../redux/actions/categoryAction';
+import { RootStore } from '../utils/TypeScript';
 
 type Inputs = {
     name: string,
@@ -34,13 +25,13 @@ const Category = () => {
     const dispatch = useDispatch();
 
     const onSubmit: SubmitHandler<Inputs> = data => {
-        if(!auth.access_token || !data.name) {
+        if (!auth.access_token || !data.name) {
             setIsEdit(false);
             reset();
             return
         };
-        if(data.id) {
-            dispatch(updateCategory({_id: data?.id, name: data.name}, auth.access_token))
+        if (data.id) {
+            dispatch(updateCategory({ _id: data?.id, name: data.name }, auth.access_token))
             setIsEdit(false)
             reset()
         } else {
@@ -49,25 +40,24 @@ const Category = () => {
         }
         setNameCategory('')
     }
-    const onConfirm = (id:string) => {
-        if(!auth.access_token || !id) return;
+    const onConfirm = (id: string) => {
+        if (!auth.access_token || !id) return;
         dispatch(deleteCategory(id, auth.access_token))
     }
 
-    const onEdit = async (name:string, id: string) => {
+    const onEdit = async (name: string, id: string) => {
         setNameCategory(name)
         setIsEdit(true)
         setValue("name", name)
         setValue("id", id)
     }
 
-    const handleBlur =() => {
+    const handleBlur = () => {
         setIsEdit(false);
         reset();
     }
 
-    if(auth.user?.role !== 'admin') return <NotFound />
-
+    if (auth.user?.role !== 'admin') return <NotFound />
     return (
         <Loading>
             <Row justify="center" style={{ marginTop: '40px' }}>
@@ -84,14 +74,14 @@ const Category = () => {
                                     gutter={[16, 16]}
                                 >
                                     <Col span={21}>
-                                        <TextField 
-                                        {...register("name")} 
-                                        style={{ width: '100%' }} 
-                                        id="standard-basic" 
-                                        label="Nhập tên danh mục"
-                                        value={nameCategory}
-                                        onBlur={handleBlur}
-                                        onChange={e => setNameCategory(e.target.value)}
+                                        <TextField
+                                            {...register("name")}
+                                            style={{ width: '100%' }}
+                                            id="standard-basic"
+                                            label="Nhập tên danh mục"
+                                            value={nameCategory}
+                                            onBlur={handleBlur}
+                                            onChange={e => setNameCategory(e.target.value)}
                                         />
                                     </Col>
                                     <Col span={3}>
@@ -103,10 +93,10 @@ const Category = () => {
                             </form>
                             <Row justify="center" style={{ marginTop: '20px' }}>
                                 <ListCategory
-                                 dataCategories={category} 
-                                 onConfirm={onConfirm}
-                                 onEdit={onEdit}
-                                 />
+                                    dataCategories={category}
+                                    onConfirm={onConfirm}
+                                    onEdit={onEdit}
+                                />
                             </Row>
                         </Col>
                     </Row>
