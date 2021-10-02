@@ -20,7 +20,7 @@ const App = () => {
   return (
     <Router>
       <Header />
-      <Grid container style={{ padding: '0 40px' }}>
+      <Grid container style={{ padding: '0 40px',background: '' }}>
         <Grid item xs={12}>
           <Switch>
             <Route exact path="/" component={PageRender} />

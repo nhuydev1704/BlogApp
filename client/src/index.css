@@ -68,6 +68,10 @@ code {
   border-bottom-right-radius: 50px;
 }
 
+div.ant-upload{
+    width: 100%;
+}
+
  #file_up{
   position: absolute;
   top:0;
@@ -79,4 +83,14 @@ code {
 }
 ::-webkit-file-upload-button{
   cursor: pointer;
+}
+
+
+.settingSpin {
+    position: fixed !important;
+    top: 50% !important;
+    left: 0 !important;
+    right: 0;
+    bottom: 0;
+    transform: translateY(-50%);
 }
