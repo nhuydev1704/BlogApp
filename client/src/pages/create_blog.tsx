@@ -5,7 +5,7 @@ import FormCreateBlog from '../components/blog/FormCreateBlog'
 import PreviewBlog from '../components/blog/PreviewBlog'
 import ReactEditor from '../components/editor/ReactEditor'
 import Loading from '../components/notification/Loading'
-import { createBlog } from '../redux/actions/blogAction'
+import { createBlog } from '../redux/actions/homeBlogsAction'
 import { IBlog, RootStore } from '../utils/TypeScript'
 import { validCreateBlog } from '../utils/Valid'
 
