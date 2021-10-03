@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Header from './components/global/Header/Header'
 import Grid from '@material-ui/core/Grid';
 import PageRender from './PageRender'
-
 import { refreshToken } from './redux/actions/authAction'
 import { getCategory } from './redux/actions/categoryAction'
 import { getHomeBlogs } from './redux/actions/homeBlogsAction'

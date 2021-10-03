@@ -94,3 +94,18 @@ div.ant-upload{
     bottom: 0;
     transform: translateY(-50%);
 }
+
+.style_img-homeblogs {
+    height: 200px;
+    width: -moz-available;
+    width: -webkit-fill-available;
+    width: fill-available;
+    object-fit: cover;
+    border: 1px solid rgb(0 0 0 / 6%);
+    border-radius: 10px;
+    margin-top: 6px;
+}
+
+.style_img-homeblogs:hover {
+  transform: scale(.9);
+}
