@@ -18,6 +18,7 @@ type Inputs = {
 
 const Category = () => {
     const [nameCategory, setNameCategory] = useState('');
+    const [idCategory, setIdCategory] = useState('')
     const [isEdit, setIsEdit] = useState(false)
     const { register, handleSubmit, reset, setValue } = useForm<Inputs>();
 
@@ -27,13 +28,17 @@ const Category = () => {
     const onSubmit: SubmitHandler<Inputs> = data => {
         if (!auth.access_token || !data.name) {
             setIsEdit(false);
-            reset();
+            setNameCategory('')
+            reset()
             return
         };
-        if (data.id) {
-            dispatch(updateCategory({ _id: data?.id, name: data.name }, auth.access_token))
-            setIsEdit(false)
+        console.log(data)
+        if (idCategory) {
+            dispatch(updateCategory({ _id: idCategory, name: data.name }, auth.access_token))
+            console.log('vao day')
+            setIdCategory('')
             reset()
+            setIsEdit(false)
         } else {
             dispatch(createCategory(data.name, auth.access_token))
             reset()
@@ -46,15 +51,16 @@ const Category = () => {
     }
 
     const onEdit = async (name: string, id: string) => {
+        console.log(id)
+        setIdCategory(id)
         setNameCategory(name)
         setIsEdit(true)
         setValue("name", name)
-        setValue("id", id)
     }
 
     const handleBlur = () => {
         setIsEdit(false);
-        reset();
+        reset()
     }
 
     if (auth.user?.role !== 'admin') return <NotFound />

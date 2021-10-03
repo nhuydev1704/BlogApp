@@ -11,12 +11,12 @@ const categoryCtrl = {
         if (req.user.role !== 'admin') res.status(400).json({ msg: "Bạn không phải admin" })
 
         try {
-            const name = req.body.name
+            const name = (req.body.name).toLowerCase()
 
             const newCategory = new Categories({ name })
             await newCategory.save()
 
-            res.json({ newCategory })
+            res.json({ newCategory, msg: "Thêm thành công." })
         } catch (err: any) {
             let errMsg;
 
@@ -47,7 +47,7 @@ const categoryCtrl = {
         try {
             await Categories.findOneAndUpdate({
                 _id: req.params.id
-            }, { name: req.body.name })
+            }, { name: (req.body.name).toLowerCase() })
 
             res.json({ msg: "Cập nhật thành công." })
         } catch (err: any) {
