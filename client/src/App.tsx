@@ -5,7 +5,8 @@ import Grid from '@material-ui/core/Grid';
 import PageRender from './PageRender'
 
 import { refreshToken } from './redux/actions/authAction'
-import {getCategory} from './redux/actions/categoryAction'
+import { getCategory } from './redux/actions/categoryAction'
+import { getHomeBlogs } from './redux/actions/homeBlogsAction'
 import { useDispatch } from 'react-redux';
 
 const App = () => {
@@ -13,14 +14,15 @@ const App = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(refreshToken())
+    dispatch(getHomeBlogs())
     dispatch(getCategory())
+    dispatch(refreshToken())
   }, [dispatch])
 
   return (
     <Router>
       <Header />
-      <Grid container style={{ padding: '0 40px',background: '' }}>
+      <Grid container style={{ padding: '0 40px', background: '' }}>
         <Grid item xs={12}>
           <Switch>
             <Route exact path="/" component={PageRender} />
