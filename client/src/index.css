@@ -8,6 +8,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+body {
+  margin: 0 !important;
+}
 
 html {
 
@@ -93,6 +96,7 @@ div.ant-upload{
     right: 0;
     bottom: 0;
     transform: translateY(-50%);
+    z-index: 9999999;
 }
 
 .style_img-homeblogs {
@@ -108,4 +112,11 @@ div.ant-upload{
 
 .style_img-homeblogs:hover {
   transform: scale(.9);
+}
+
+image {
+  height: 100%;
+  width: 100%;
+  display: block;
+  object-fit: cover;
 }

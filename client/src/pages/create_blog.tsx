@@ -8,6 +8,7 @@ import Loading from '../components/notification/Loading'
 import { createBlog } from '../redux/actions/homeBlogsAction'
 import { IBlog, RootStore } from '../utils/TypeScript'
 import { validCreateBlog } from '../utils/Valid'
+import TinyEditor from '../components/editor/TinyEditor'
 
 const initState = {
 	user: '',
@@ -75,7 +76,8 @@ const CreateBlog = () => {
 						<PreviewBlog blog={blog} />
 					</Col>
 					<Col span={24}>
-						<ReactEditor setBody={setBody} />
+						{/* <ReactEditor setBody={setBody} /> */}
+						<TinyEditor body={body} setBody={setBody} />
 						<small>
 							{
 								`Số từ: 
