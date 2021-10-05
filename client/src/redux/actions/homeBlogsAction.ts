@@ -50,7 +50,6 @@ export const getHomeBlogs = () => async (dispatch: Dispatch<IAlertType | IGetHom
 		if (res.status === 200) {
 			dispatch({ type: GET_HOME_BLOGS, payload: res.data })
 		}
-		console.log(res)
 
 		dispatch({ type: ALERT, payload: { loading: false } })
 	} catch (err: any) {
@@ -62,13 +61,15 @@ export const getHomeBlogs = () => async (dispatch: Dispatch<IAlertType | IGetHom
 	}
 }
 
-export const getBlogsByCategory = (id: string) =>  async (dispatch: Dispatch <IAlertType | IGetBlogsByCategoryType>) => {
+export const getBlogsByCategory = (id: string, search: string) =>  async (dispatch: Dispatch <IAlertType | IGetBlogsByCategoryType>) => {
 	try {
+		let limit = 8;
+		let pageValue = search ? search : `?page=${1}`
 		dispatch({ type: ALERT, payload: { loading: true } })
-		const res = await getAPI(`blogs/${id}`)
+		const res = await getAPI(`blogs/${id}${pageValue}&limit=${limit}`)
 
 		if (res.status === 200) {
-			dispatch({ type: GET_BLOGS_BY_CATEGORY, payload: {...res.data, id} })
+			dispatch({ type: GET_BLOGS_BY_CATEGORY, payload: {...res.data, id, search} })
 		}
 
 		dispatch({ type: ALERT, payload: { loading: false } })
