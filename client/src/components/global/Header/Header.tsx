@@ -43,7 +43,7 @@ export default function Header() {
 
     const afLoginLinks = [
         { label: 'Trang chủ', path: '/', icon: <HomeIcon /> },
-        { label: 'Tạo Blog', path: '/create_blog', icon: <CreateIcon /> },
+        { label: 'Bài viết', path: '/create_blog', icon: <CreateIcon /> },
         auth?.user?.role === 'admin' ?
             { label: 'Danh mục', path: '/category', icon: <CreateIcon /> }
             : {},

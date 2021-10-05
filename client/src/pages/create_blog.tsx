@@ -39,7 +39,6 @@ const CreateBlog = () => {
 
 	const handleSubmitCreateBlog = async () => {
 		if (!auth.access_token) return;
-
 		const check = validCreateBlog({ ...blog, content: text });
 		if (check.errLength !== 0) {
 			notification['error'](
@@ -62,13 +61,12 @@ const CreateBlog = () => {
 		dispatch(createBlog(newData, auth?.access_token))
 	}
 
-	// if(!auth.access_token) return <NotFound />
 	return (
 		<div style={{ margin: '40px 0' }}>
 			<Loading loadFull>
 				<Row gutter={[16, 16]}>
 					<Col span={12}>
-						<h3>Tạo blog</h3>
+						<h3>Thông tin bài đăng</h3>
 						<FormCreateBlog blog={blog} setBlog={setBlog} />
 					</Col>
 					<Col span={12}>

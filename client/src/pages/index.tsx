@@ -1,14 +1,14 @@
-import { Col, Image, Row, Tooltip, Divider } from 'antd'
+import { Col, Image, Row, Tooltip, Divider, Button } from 'antd'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import NotFound from '../components/global/NotFound'
 import Loading from '../components/notification/Loading'
-import { RootStore } from '../utils/TypeScript'
+import { RootStore, IBlog } from '../utils/TypeScript'
 import moment from 'moment'
 import Card from '@mui/material/Card';
 
-const Home = () => {
+const Home: React.FC<IBlog | any> = () => {
 
     const { auth, homeBlogs } = useSelector((state: RootStore) => state);
 
@@ -55,6 +55,7 @@ const Home = () => {
                                                                         <img
                                                                             src={`${item.thumbnail}`}
                                                                             className="style_img-homeblogs"
+                                                                            alt="thumbnail"
                                                                         />
                                                                     }
                                                                 </Link>
@@ -78,7 +79,9 @@ const Home = () => {
                                                                         color: '#aaa',
                                                                         fontSize: '.9rem'
                                                                     }}>
-                                                                    {moment(item?.user?.createdAt).format("YYYY-MM-DD hh:mm:ss")}
+                                                                    {
+                                                                        moment(item?.createdAt).format("YYYY-MM-DD hh:mm:ss")
+                                                                    }
                                                                 </Col>
                                                             </Row>
                                                         }
@@ -94,6 +97,14 @@ const Home = () => {
                                         }
                                     </Row>
                                 </>
+                            }
+                            {
+                                blog.count > 4 && 
+                                <Link to="/blogs/orther">
+                                    <Button type="link" block style={{textAlign: 'right', marginTop: '4px'}}>
+                                        Xem tất cả...
+                                    </Button>
+                                </Link>
                             }
                         </div>
                     ))

@@ -40,19 +40,20 @@ export interface IAlert {
 }
 
 export interface ICategory {
-  _id: string
-  name: string
-  createdAt?: string
-  updatedAt?: string
+    _id: string
+    name: string
+    createdAt?: string
+    updatedAt?: string
 }
 
 export interface IBlog {
-  _id?: string
-  user: string | IUser
-  title: string
-  content: string
-  description: string
-  thumbnail: string | File
-  category: string
-  createdAt: string
+    _id?: string
+    user: string | IUser
+    title: string
+    content: string
+    description: string
+    thumbnail: string | File
+    category: string
+    createdAt: string
+    blogs?: any
 }
