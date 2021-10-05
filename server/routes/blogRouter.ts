@@ -8,5 +8,7 @@ router.post('/blog', auth, blogCtrl.createBlog)
 
 router.get('/home/blogs', blogCtrl.getHomeBlog)
 
+router.get('/blogs/:category_id', blogCtrl.getBlogByCategory)
+
 
 export default router
