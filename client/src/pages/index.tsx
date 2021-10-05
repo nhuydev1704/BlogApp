@@ -7,6 +7,7 @@ import Loading from '../components/notification/Loading'
 import { RootStore, IBlog } from '../utils/TypeScript'
 import moment from 'moment'
 import Card from '@mui/material/Card';
+import CardBlog from '../components/cardBlog/CardBlog'
 
 const Home: React.FC<IBlog | any> = () => {
 
@@ -33,74 +34,12 @@ const Home: React.FC<IBlog | any> = () => {
                                         </Link>
                                     </h3>
                                     <Divider style={{ margin: 0, borderTop: '1px solid rgba(0, 0, 0, 0.4)' }} />
-                                    <Row gutter={[16, 16]} style={{ marginTop: '10px' }}>
-                                        {
-                                            blog.blogs.map(item => (
-                                                <Col xl={6} md={12} xs={24} lg={12} key={item._id}>
-                                                    <Card style={{
-                                                        padding: '16px',
-                                                        border: '1px solid rgb(0 0 0 / 6%)',
-                                                        borderBottom: 'none',
-                                                        borderRadius: '10px',
-                                                        background: 'rgb(245 245 245)'
-                                                    }}>
-                                                        <h3>
-                                                            <Tooltip placement="top" title={item.title}>
-                                                                <Link
-                                                                    to={`/blog/${item._id}`}
-                                                                >
-                                                                    {item.title.slice(0, 26)}...
-                                                                    {
-                                                                        typeof (item.thumbnail) === 'string' &&
-                                                                        <img
-                                                                            src={`${item.thumbnail}`}
-                                                                            className="style_img-homeblogs"
-                                                                            alt="thumbnail"
-                                                                        />
-                                                                    }
-                                                                </Link>
-                                                            </Tooltip>
-                                                        </h3>
-                                                        {
-                                                            typeof (item.user) !== 'string' &&
-                                                            <Row
-                                                                gutter={[0, 16]}
-                                                                style={{ marginTop: '4px' }}
-                                                            >
-                                                                <Col span={14}>
-                                                                    <Link to={`/profile/${item.user._id}`}>
-                                                                        Tạo bởi: {item?.user?.name!}
-                                                                    </Link>
-                                                                </Col>
-                                                                <Col
-                                                                    span={10}
-                                                                    style={{
-                                                                        textAlign: 'right',
-                                                                        color: '#aaa',
-                                                                        fontSize: '.9rem'
-                                                                    }}>
-                                                                    {
-                                                                        moment(item?.createdAt).format("YYYY-MM-DD hh:mm:ss")
-                                                                    }
-                                                                </Col>
-                                                            </Row>
-                                                        }
-                                                        <span
-                                                            style={{
-                                                                fontSize: '1rem'
-                                                            }}>
-                                                            {item.description.slice(0, 120)}...
-                                                        </span>
-                                                    </Card>
-                                                </Col>
-                                            ))
-                                        }
-                                    </Row>
+                                    <CardBlog blogs={blog.blogs} />
                                 </>
                             }
                             {
                                 blog.count > 4 && 
-                                <Link to="/blogs/orther">
+                                <Link to={`/blogs/${(blog.name).toLowerCase()}`}>
                                     <Button type="link" block style={{textAlign: 'right', marginTop: '4px'}}>
                                         Xem tất cả...
                                     </Button>

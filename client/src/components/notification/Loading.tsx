@@ -6,12 +6,13 @@ import {get} from 'lodash'
 
 const Loading = (props: any) => {
     const loadFull = get(props, 'loadFull', '')
+    const loading = get(props, 'loadingProps', false)
 
     const { alert } = useSelector((state: RootStore) => state)
     return (
         <Spin 
             className={loadFull && 'settingSpin'}
-            spinning={alert.loading || false} 
+            spinning={alert.loading || loading} 
             tip="Vui lòng chờ..."
         >
             {props.children}

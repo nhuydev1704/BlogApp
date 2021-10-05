@@ -3,10 +3,12 @@ import auth from './authReducer'
 import alert from './alertReducer'
 import category from './categoryReducer'
 import homeBlogs from './homeBlogsReducer'
+import blogByCategory from './blogByCategoryReducer'
 
 export default combineReducers({
     auth,
     alert,
     category,
-    homeBlogs
+    homeBlogs,
+    blogByCategory
 })
