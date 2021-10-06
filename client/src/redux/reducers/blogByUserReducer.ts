@@ -1,13 +1,13 @@
 import {
-    GET_BLOGS_BY_CATEGORY,
-    IBlogsByCategory,
-    IGetBlogsByCategoryType
+    GET_BLOGS_BY_USER,
+    IBlogsByUser,
+    IGetBlogsByUserType
 } from '../types/homeBlogsType'
 
 
-const blogByCategoryReducer = (state: IBlogsByCategory[] = [], action: IGetBlogsByCategoryType): IBlogsByCategory[] => {
+const blogByUserReducer = (state: IBlogsByUser[] = [], action: IGetBlogsByUserType): IBlogsByUser[] => {
     switch (action.type) {
-        case GET_BLOGS_BY_CATEGORY:
+        case GET_BLOGS_BY_USER:
             if(state.every(item => item.id !== action.payload.id)){
                 return [...state, action.payload]
             }else {
@@ -23,4 +23,4 @@ const blogByCategoryReducer = (state: IBlogsByCategory[] = [], action: IGetBlogs
 }
 
 
-export default blogByCategoryReducer;
+export default blogByUserReducer;

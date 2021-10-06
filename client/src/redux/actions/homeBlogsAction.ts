@@ -8,7 +8,9 @@ import {
 	GET_HOME_BLOGS,
 	IGetHomeBlogsType,
 	GET_BLOGS_BY_CATEGORY,
-	IGetBlogsByCategoryType
+	IGetBlogsByCategoryType,
+	GET_BLOGS_BY_USER,
+	IGetBlogsByUserType
 } from '../types/homeBlogsType'
 
 export const createBlog = (dataBlog: IBlog, token: string) => async (dispatch: Dispatch<IAlertType>) => {
@@ -63,13 +65,34 @@ export const getHomeBlogs = () => async (dispatch: Dispatch<IAlertType | IGetHom
 
 export const getBlogsByCategory = (id: string, search: string) =>  async (dispatch: Dispatch <IAlertType | IGetBlogsByCategoryType>) => {
 	try {
-		let limit = 8;
+		let limit = 4;
 		let pageValue = search ? search : `?page=${1}`
 		dispatch({ type: ALERT, payload: { loading: true } })
-		const res = await getAPI(`blogs/${id}${pageValue}&limit=${limit}`)
+		const res = await getAPI(`blogs/category/${id}${pageValue}&limit=${limit}`)
 
 		if (res.status === 200) {
 			dispatch({ type: GET_BLOGS_BY_CATEGORY, payload: {...res.data, id, search} })
+		}
+
+		dispatch({ type: ALERT, payload: { loading: false } })
+	}catch(err: any) {
+		dispatch({ type: ALERT, payload: { loading: false } })
+		notification['error']({
+			message: "Blog Nguyễn Như Ý",
+			description: err?.response?.data?.msg,
+		});
+	}
+}
+
+export const getBlogsByUser = (id: string, search: string) =>  async (dispatch: Dispatch <IAlertType | IGetBlogsByUserType>) => {
+	try {
+		let limit = 4;
+		let pageValue = search ? search : `?page=${1}`
+		dispatch({ type: ALERT, payload: { loading: true } })
+		const res = await getAPI(`blogs/user/${id}${pageValue}&limit=${limit}`)
+
+		if (res.status === 200) {
+			dispatch({ type: GET_BLOGS_BY_USER, payload: {...res.data, id, search} })
 		}
 
 		dispatch({ type: ALERT, payload: { loading: false } })

@@ -8,6 +8,8 @@ import { useSelector } from 'react-redux'
 import { IParams, RootStore } from '../../utils/TypeScript'
 import OtherInfo from '../../components/profile/OtherInfo';
 import Loading from '../../components/notification/Loading'
+import UserBlogs from '../../components/profile/UserBlogs';
+
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -30,8 +32,8 @@ const Profile = () => {
 
     return (
         <Loading loadFull>
-            <Row gutter={[16, 16]} style={{ marginTop: '20px' }}>
-                <Col span={10}>
+            <Row gutter={[16, 16]} style={{ margin: '30px 0' }}>
+                <Col span={10} style={{marginTop: '10px'}}>
                     <Card className={classes.cardCustom} variant="outlined">
                         {
                             (auth.user?._id === slug)
@@ -40,10 +42,9 @@ const Profile = () => {
                         }
                     </Card>
                 </Col>
-                <Col span={14} >
-                    helo
+                <Col span={14}  >
+                    <UserBlogs />
                 </Col>
-
             </Row>
         </Loading>
     )

@@ -108,6 +108,7 @@ div.ant-upload{
     border: 1px solid rgb(0 0 0 / 6%);
     border-radius: 10px;
     margin-top: 6px;
+    transition: all ease-in .15s;
 }
 
 .style_img-homeblogs:hover {

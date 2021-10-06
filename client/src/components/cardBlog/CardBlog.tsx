@@ -6,19 +6,24 @@ import moment from 'moment'
 import Card from '@mui/material/Card';
 
 const CardBlog = (props: any) => {
-	const blogs = get(props, 'blogs', [])
+    const blogs = get(props, 'blogs', [])
 
 	return (
 		<Row gutter={[16, 16]} style={{ marginTop: '10px' }}>
 			{
                 blogs && blogs.length > 0 && blogs.map((item:any) => (
-                    <Col xl={6} md={12} xs={24} lg={12} key={item._id}>
+                    <Col xl={props.layout ? 12 : 6}
+                     md={props.layout ? 24 : 12}
+                      xs={24} lg={props.layout ? 24 : 12}
+                       key={item._id}
+                       >
                         <Card style={{
                             padding: '16px',
                             border: '1px solid rgb(0 0 0 / 6%)',
                             borderBottom: 'none',
                             borderRadius: '10px',
-                            background: 'rgb(245 245 245)'
+                            background: 'rgb(245 245 245)',
+                            minHeight: '360px'
                         }}>
                             <h3>
                                 <Tooltip placement="top" title={item.title}>
