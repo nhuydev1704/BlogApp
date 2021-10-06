@@ -5,7 +5,12 @@ import { ALERT, IAlertType } from "../types/alertType"
 import { Dispatch } from "redux"
 import { notification } from 'antd';
 import { checkImage, imageUpload } from '../../utils/imageUpload'
-import { patchAPI } from '../../utils/FetchData'
+import { patchAPI, getAPI } from '../../utils/FetchData'
+
+import {
+    GET_OTHER_INFO,
+    IGetOtherInfoType
+} from '../types/profileType'
 
 export const updateUser = (avatar: File, name: string, auth: IAuth) =>
     async (dispatch: Dispatch<IAuthType | IAlertType>) => {
@@ -83,4 +88,29 @@ export const resetPassword = (password: string, token: string) =>
                 description: err?.response?.data?.msg,
             });
         }
-    }
+}
+
+export const getOtherUser = (id: string) =>
+    async (dispatch: Dispatch<IGetOtherInfoType | IAlertType>) => {
+        try {
+            dispatch({ type: ALERT, payload: { loading: true } })
+
+            const res = await getAPI(`user/${id}`)
+
+            if(res.status === 200) {
+                dispatch({
+                    type: GET_OTHER_INFO,
+                    payload: res.data
+                })
+            }
+
+            dispatch({ type: ALERT, payload: { loading: false } })
+
+        } catch (err: any) {
+            dispatch({ type: ALERT, payload: { loading: false } })
+            notification['error']({
+                message: "Blog Nguyễn Như Ý",
+                description: err?.response?.data?.msg,
+            });
+        }
+}

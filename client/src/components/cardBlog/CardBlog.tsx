@@ -11,7 +11,7 @@ const CardBlog = (props: any) => {
 	return (
 		<Row gutter={[16, 16]} style={{ marginTop: '10px' }}>
 			{
-                blogs && blogs.length > 0 && blogs.map(item => (
+                blogs && blogs.length > 0 && blogs.map((item:any) => (
                     <Col xl={6} md={12} xs={24} lg={12} key={item._id}>
                         <Card style={{
                             padding: '16px',

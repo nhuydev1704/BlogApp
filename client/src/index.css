@@ -120,3 +120,28 @@ image {
   display: block;
   object-fit: cover;
 }
+
+.item-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.other_user-avatar {
+  padding: 40px 0 10px 0 ;
+}
+
+.other_user-role {
+  text-transform: uppercase;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.other_user-user {
+  font-size: 1.2rem;
+}
+
+.other_user-join {
+  font-size: 1rem;
+  margin-bottom: 40px;
+}

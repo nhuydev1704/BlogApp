@@ -29,14 +29,14 @@ const Profile = () => {
     const classes = useStyles();
 
     return (
-        <Loading>
+        <Loading loadFull>
             <Row gutter={[16, 16]} style={{ marginTop: '20px' }}>
                 <Col span={10}>
                     <Card className={classes.cardCustom} variant="outlined">
                         {
                             (auth.user?._id === slug)
                                 ? <UserInfo classes={classes} />
-                                : <OtherInfo />
+                                : <OtherInfo id={slug} />
                         }
                     </Card>
                 </Col>
