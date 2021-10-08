@@ -63,9 +63,9 @@ const TinyEditor: React.FC<IProps> = ({ body, setBody }) => {
                     plugins: [
                         "advlist autolink link image lists charmap print preview hr anchor pagebreak",
                         "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
-                        "save table contextmenu directionality emoticons template"
+                        "save table contextmenu directionality emoticons template codesample fullscreen"
                     ],
-                    toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media fullpage | forecolor backcolor emoticons",
+                    toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media fullpage | forecolor backcolor emoticons | codesample fullscreen",
                     content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
                     paste_data_images: true,
                     file_browser_callback_types: 'image',

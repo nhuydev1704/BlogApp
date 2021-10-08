@@ -78,7 +78,10 @@ const Login = () => {
     const { auth } = useSelector((state: RootStore) => state)
 
     useEffect(() => {
-        if (auth.access_token) history.push('/')
+        if (auth.access_token) {
+            let url = history.location.search.replace('?', '/') 
+            return history.push(url)
+        }
     }, [auth.access_token, history]);
 
     const onSubmit: SubmitHandler<Inputs> = data => {
@@ -146,7 +149,7 @@ const Login = () => {
                             <SocicalLogin classes={classes} />
                             <Typography className={`${classes.textRegister}`} variant="h6" gutterBottom>
                                 Bạn chưa có tài khoản?
-                                <Link style={{ color: '#4267B2', margin: '0 0 4px 4px' }} to="/register">Đăng kí ngay</Link>
+                                <Link style={{ color: '#4267B2', margin: '0 0 4px 4px' }} to={`/register${history.location.search}`}>Đăng kí ngay</Link>
                             </Typography>
                         </form>
                     </Card>

@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import React from 'react';
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import RegisterInput from '../components/auth/RegisterInput';
 import Loading from '../components/notification/Loading';
 import { notification } from 'antd';
@@ -64,6 +64,8 @@ const useStyles = makeStyles({
 });
 
 const Register = () => {
+    const history = useHistory()
+
     const classes = useStyles();
     const { register, handleSubmit } = useForm<InputRegister>();
 
@@ -104,7 +106,7 @@ const Register = () => {
                             </Button>
                             <Typography className={`${classes.textRegister}`} variant="h6" gutterBottom>
                                 Đã có tài khoản?
-                                <Link style={{ color: '#4267B2', margin: '0 0 4px 4px' }} to="/login">Đăng nhập ngay</Link>
+                                <Link style={{ color: '#4267B2', margin: '0 0 4px 4px' }} to={`/login${history.location.search}`}>Đăng nhập ngay</Link>
                             </Typography>
                         </form>
                     </Card>
