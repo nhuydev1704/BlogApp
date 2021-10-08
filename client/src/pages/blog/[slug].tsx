@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import {getAPI} from '../../utils/FetchData'
 import Loading from '../../components/notification/Loading'
 import DisplayBlog from '../../components/blog/DisplayBlog'
-import {notification} from 'antd'
+import {notification, Row, Col} from 'antd'
 
 const BlogDetail = () => {
 	const blog_id = useParams<IParams>().slug
@@ -16,12 +16,15 @@ const BlogDetail = () => {
 	const {} = useSelector((state: RootStore) => state)
 	const dispatch = useDispatch()
 
+
 	useEffect(() => {
+		const prevTitle = document.title;
 		if(!blog_id) return;
 		setLoading(true)
 
 		getAPI(`blog/${blog_id}`)
 			.then(res => {
+				document.title = res.data.title
 				setBlog(res.data)
 				setLoading(false)
 
@@ -34,14 +37,21 @@ const BlogDetail = () => {
 				setLoading(false)
 			})
 
-		return () => setBlog(undefined)
+		return () => {
+			setBlog(undefined);
+			document.title = prevTitle;
+		}
 	}, [blog_id])
 
 	return (
 		<Loading loadFull loadingProps={loading}>
-			{
-				blog && <DisplayBlog blog={blog} />
-			}
+		<Row justify="center" style={{marginTop: "40px"}}>
+			<Col span={16} style={{overflow: 'hidden'}}>
+				{
+					blog && <DisplayBlog blog={blog} />
+				}
+			</Col>
+		</Row>
 		</Loading>
 	)
 }
