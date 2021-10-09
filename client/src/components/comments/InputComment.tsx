@@ -1,29 +1,37 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import ReactEditor from "../editor/ReactEditor";
+import {IComment} from '../../utils/TypeScript'
 import {Button, Row} from 'antd'
 
 interface IProps {
 	callback: (body: string) => void
+	 edit?: IComment
+	 setEdit?: (edit?: IComment) => void
 }
 
-const InputComment: React.FC<IProps> = ({callback}) => {
+const InputComment: React.FC<IProps> = ({callback, edit, setEdit}) => {
 	const [body, setBody] = useState("");
 	const divRef = useRef<HTMLDivElement>(null)
 
 	const handleSubmit = () => {
 		const div = divRef.current;
 		const text = (div?.innerText as string)
-		if(!text.trim()) return;
+		if(!text.trim()) {
+			if(setEdit) return setEdit(undefined)
+			return;
+		}
 
 		callback(body)
-		console.log(body)
-
 		setBody('')
 
 	}
 
+	useEffect(() => {
+		if(edit) setBody(edit.content)
+	}, [edit])
+
 	return (
-		<div>
+		<div style={{marginTop: '6px'}}>
 			<ReactEditor body={body} setBody={setBody} />
 			<div
 				 ref={divRef}
@@ -37,7 +45,7 @@ const InputComment: React.FC<IProps> = ({callback}) => {
 			 		type="primary"
 			 		onClick={handleSubmit}
 			 	>
-			 		Bình luận
+			 		{edit ? 'Cập nhật' : 'Bình luận'}
 			 	</Button>
 			 </Row>
 		</div>

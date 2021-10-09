@@ -9,7 +9,10 @@ import {
 	GET_COMMENT,
 	IGetCommentType,
 	REPLY_COMMENT,
-	IReplyCommentType
+	IReplyCommentType,
+	UPDATE_COMMENT,
+	UPDATE_REPLY,
+	IUpdateCommentType
 } from "../types/commentType";
 
 export const createComment =
@@ -62,6 +65,25 @@ export const replyComment =
 				type: REPLY_COMMENT,
 				payload: { ...res.data, user: data.user, reply_user: data.reply_user },
 			});
+		} catch (err: any) {
+			dispatch({ type: ALERT, payload: { loading: false } });
+			notification["error"]({
+				message: "Blog Nguyễn Như Ý",
+				description: err?.response?.data?.msg,
+			});
+		}
+	};
+
+export const updateComment = 
+	(data: IComment, token: string) =>
+	async (dispatch: Dispatch<IAlertType | IUpdateCommentType>) => {
+		try {
+			dispatch({
+				type: data.comment_root ? UPDATE_REPLY :  UPDATE_COMMENT,
+				payload: data,
+			});
+			// const res = await postAPI("reply_comment", data, token);
+
 		} catch (err: any) {
 			dispatch({ type: ALERT, payload: { loading: false } });
 			notification["error"]({

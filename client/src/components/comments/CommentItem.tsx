@@ -1,7 +1,7 @@
 import React, { createElement, useState, useEffect } from "react";
-import { Comment, Tooltip, Avatar, Divider } from "antd";
+import { Comment, Tooltip, Avatar, Divider, Space } from "antd";
 import moment from "moment";
-import {useDispatch, useSelector} from 'react-redux'
+import { useDispatch, useSelector } from "react-redux";
 import {
 	DislikeOutlined,
 	LikeOutlined,
@@ -12,24 +12,32 @@ import { IComment, RootStore, IBlog, IUser } from "../../utils/TypeScript";
 import { Link } from "react-router-dom";
 import Skeleton from "@mui/material/Skeleton";
 import InputComment from "./InputComment";
-import {replyComment} from '../../redux/actions/commentAction'
+import { replyComment, updateComment } from "../../redux/actions/commentAction";
+import { EditFilled, DeleteFilled } from "@ant-design/icons";
 import "./style.css";
 
 interface IProps {
-	comment: IComment
-	showReply: IComment[]
-  	setShowReply: (showReply: IComment[]) => void
+	comment: IComment;
+	showReply: IComment[];
+	setShowReply: (showReply: IComment[]) => void;
 }
 
-const CommentItem: React.FC<IProps> = ({ children, comment, showReply, setShowReply }) => {
+const CommentItem: React.FC<IProps> = ({
+	children,
+	comment,
+	showReply,
+	setShowReply,
+}) => {
 	const [likes, setLikes] = useState(0);
 	const [dislikes, setDislikes] = useState(0);
 	const [action, setAction] = useState<any>();
 
+	const [edit, setEdit] = useState<IComment>();
+
 	const [reply, setReply] = useState(false);
 
-	const {auth} = useSelector((state: RootStore) => state)
-	const dispatch = useDispatch()
+	const { auth } = useSelector((state: RootStore) => state);
+	const dispatch = useDispatch();
 
 	const like = () => {
 		setLikes(1);
@@ -37,13 +45,12 @@ const CommentItem: React.FC<IProps> = ({ children, comment, showReply, setShowRe
 		setAction("liked");
 	};
 
-
 	const dislike = () => {
 		setLikes(0);
 		setDislikes(1);
 		setAction("disliked");
 	};
-	
+
 	const handleReplyComment = (body: string) => {
 		if (!auth.user || !auth.access_token) return;
 
@@ -56,9 +63,34 @@ const CommentItem: React.FC<IProps> = ({ children, comment, showReply, setShowRe
 			comment_root: comment.comment_root || comment._id,
 			createdAt: new Date().toISOString(),
 		};
-		setShowReply([ data, ...showReply]);
+		setShowReply([data, ...showReply]);
 		dispatch(replyComment(data, auth.access_token));
 		setReply(false);
+	};
+
+	const handleUpdate = (body: string) => {
+		if (!auth.user || !auth.access_token || !edit) return;
+
+		if(body === edit.content) {
+			return setEdit(undefined)
+		}
+		const newComment = {...edit, content: body}
+		dispatch(updateComment(newComment,auth.access_token))
+
+		setEdit(undefined)
+	}
+
+	const menuUpdate = (comment: IComment) => {
+		return (
+			<Space style={{ cursor: "pointer" }}>
+				<Tooltip title="Sửa">
+					<EditFilled onClick={() => setEdit(comment)} />
+				</Tooltip>
+				<Tooltip title="Xóa">
+					<DeleteFilled onClick={() => console.log("xoa")} />
+				</Tooltip>
+			</Space>
+		);
 	};
 
 	const actions: any = [
@@ -79,70 +111,119 @@ const CommentItem: React.FC<IProps> = ({ children, comment, showReply, setShowRe
 		<span key="comment-basic-reply-to" onClick={() => setReply(!reply)}>
 			{reply ? "Đóng" : "Trả lời"}
 		</span>,
+		comment.blog_user_id === auth.user?._id ? (
+			comment.user && comment.user._id! === auth.user._id ? (
+				menuUpdate(comment)
+			) : (
+				<Tooltip title="Xóa">
+					<DeleteFilled />
+				</Tooltip>
+			)
+		) : (
+			comment.user &&
+			comment.user._id === auth.user?._id &&
+			menuUpdate(comment)
+		),
 	];
 
 	return comment.user ? (
 		<div>
-			<Comment
-				actions={
-					!comment._id ? (
-						<Skeleton animation="wave" height={10} width="40%" />
-					) : (
-						actions
-					)
-				}
-				author={
-					!comment._id ? (
-						<Skeleton
-							animation="wave"
-							height={10}
-							width="80%"
-							style={{ marginBottom: 6 }}
-						/>
-					) : (
-						<Link style={{fontWeight: 500, color: '#333'}} to={"/profile/" + comment.user._id}>
-							{comment.user.name}
-						</Link>
-					)
-				}
-				avatar={
-					!comment._id ? (
-						<Skeleton
-							animation="wave"
-							variant="circular"
-							width={40}
-							height={40}
-						/>
-					) : (
+			{edit ? (
+				<Space>
+					<Space direction="vertical">
 						<Avatar
 							src={comment.user.avatar}
 							alt={comment.user.avatar}
 						/>
-					)
-				}
-				content={
-					!comment._id ? (
-						<Skeleton animation="wave" height={10} width="40%" />
-					) : (
-						<div
-							dangerouslySetInnerHTML={{
-								__html: comment.content,
-							}}
-						/>
-					)
-				}
-				datetime={
-					<Tooltip title={moment(comment.createdAt).format("YYYY-MM-DD HH:mm:ss")}>
-						<span>{moment(comment.createdAt).fromNow()}</span>
-					</Tooltip>
-				}
-			> 
-				{
-					reply && <InputComment callback={handleReplyComment} />
-				}
-				{children}
-			</Comment>
-			<Divider style={{margin: '10px 0'}} />
+						<Link
+							style={{ fontWeight: 500, color: "#333" }}
+							to={"/profile/" + comment.user._id}
+						>
+							<small>{comment.user.name}</small>
+						</Link>
+					</Space>
+					<InputComment
+						 callback={handleUpdate}
+						 edit ={edit}
+						 setEdit={setEdit}
+					 />
+				</Space>	
+			) : (
+				<Comment
+					actions={
+						!comment._id ? (
+							<Skeleton
+								animation="wave"
+								height={10}
+								width="40%"
+							/>
+						) : (
+							actions
+						)
+					}
+					author={
+						!comment._id ? (
+							<Skeleton
+								animation="wave"
+								height={10}
+								width="80%"
+								style={{ marginBottom: 6 }}
+							/>
+						) : (
+							<Link
+								style={{ fontWeight: 500, color: "#333" }}
+								to={"/profile/" + comment.user._id}
+							>
+								{comment.user.name}
+							</Link>
+						)
+					}
+					avatar={
+						!comment._id ? (
+							<Skeleton
+								animation="wave"
+								variant="circular"
+								width={40}
+								height={40}
+							/>
+						) : (
+							<Avatar
+								src={comment.user.avatar}
+								alt={comment.user.avatar}
+							/>
+						)
+					}
+					content={
+						!comment._id ? (
+							<Skeleton
+								animation="wave"
+								height={10}
+								width="40%"
+							/>
+						) : (
+							<div
+								dangerouslySetInnerHTML={{
+									__html: comment.content,
+								}}
+							/>
+						)
+					}
+					datetime={
+						<Tooltip
+							title={moment(comment.createdAt).format(
+								"YYYY-MM-DD HH:mm:ss"
+							)}
+						>
+							<span>{moment(comment.createdAt).fromNow()}</span>
+						</Tooltip>
+					}
+				>
+					{reply && <InputComment callback={handleReplyComment} />}
+					{children}
+				</Comment>
+			)}
+
+			<Divider style={{ margin: "10px 0" }} />
 		</div>
 	) : (
 		<></>

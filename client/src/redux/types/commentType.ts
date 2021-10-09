@@ -3,6 +3,8 @@ import {IComment} from '../../utils/TypeScript'
 export const CREATE_COMMENT = "CREATE_COMMENT"
 export const GET_COMMENT = "GET_COMMENT"
 export const REPLY_COMMENT = "REPLY_COMMENT"
+export const UPDATE_COMMENT = "UPDATE_COMMENT"
+export const UPDATE_REPLY = "UPDATE_REPLY"
 	
 
 export interface ICommentState {
@@ -25,7 +27,14 @@ export interface IReplyCommentType {
 	payload: IComment
 }
 
+export interface IUpdateCommentType {
+	type: typeof UPDATE_COMMENT | typeof UPDATE_REPLY
+	payload: IComment
+}
+
+
 export type ICommentType = 
 | ICreateCommentType
 | IGetCommentType
 | IReplyCommentType
+| IUpdateCommentType
