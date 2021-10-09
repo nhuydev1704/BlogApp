@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { IBlog, RootStore, IUser, IComment } from "../../utils/TypeScript";
-import { Row, Col } from "antd";
+import { Row, Col, Skeleton  } from "antd";
 import Avatar from "@mui/material/Avatar";
 import Comments from "../comments";
 import InputComment from "../comments/InputComment";
-import { createComment } from "../../redux/actions/commentAction";
+import { createComment, getComments } from "../../redux/actions/commentAction";
+import PaginationComponent from '../pagination'
 
 interface IProps {
 	blog: IBlog;
@@ -15,8 +16,11 @@ interface IProps {
 const DisplayBlog: React.FC<IProps> = ({ blog }) => {
 	const { auth, comments } = useSelector((state: RootStore) => state);
 	const dispatch = useDispatch();
+	const history = useHistory()
+	const { search } = history.location
 
 	const [showComments, setShowComments] = useState<IComment[]>([]);
+	const [loading, setLoading] = useState(false)
 
 	const handleComment = (body: string) => {
 		if (!auth.user || !auth.access_token) return;
@@ -34,9 +38,33 @@ const DisplayBlog: React.FC<IProps> = ({ blog }) => {
 	};
 
 	useEffect(() => {
-		if(comments.data.length === 0) return;
 		setShowComments(comments.data)
 	}, [comments.data])
+
+	const getComment = useCallback(
+		async(id: string, num = 1) => {
+			setLoading(true)
+			await dispatch(getComments(id, num))
+			setLoading(false)
+		},
+
+		[dispatch]
+	)
+
+	useEffect(() => {
+		if(!blog._id) return;
+		setLoading(true)
+		const numPage = history.location.search.slice(6) || 1
+		getComment(blog._id, numPage);
+		setLoading(false)
+	}, [blog._id, getComment, history])
+
+	const handlePagination = async (page: number) => {
+		if(!blog._id) return;
+		setLoading(true)
+		await dispatch(getComments(blog._id, page))
+		setLoading(false)
+	}
 
 	return (
 		<div style={{ marginBottom: "20px" }}>
@@ -81,9 +109,19 @@ const DisplayBlog: React.FC<IProps> = ({ blog }) => {
 					để bình luận
 				</h3>
 			)}
-			{showComments?.map((comment, index) => (
-				<Comments key={index} comment={comment} />
-			))}
+			{
+				loading ? 
+					<Skeleton avatar paragraph={{ rows: 4 }} /> 
+					: showComments?.map((comment, index) => (
+						<Comments key={index} comment={comment} /> 
+					))
+			}
+			<Row justify="end" style={{marginTop: '20px'}}>
+				{
+					comments.total > 1 &&
+					<PaginationComponent total={comments.total} callback={handlePagination} />
+				}
+			</Row>
 		</div>
 	);
 };

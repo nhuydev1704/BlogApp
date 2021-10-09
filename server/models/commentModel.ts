@@ -16,7 +16,8 @@ const commentSchema = new mongoose.Schema({
 	reply_user:{
 		type: mongoose.Types.ObjectId,
 		ref: 'user'
-	}
+	},
+	comment_root: { type: mongoose.Types.ObjectId, ref: 'comment' }
 
 }, {
 	timestamps: true

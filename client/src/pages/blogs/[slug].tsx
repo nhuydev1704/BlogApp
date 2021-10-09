@@ -46,9 +46,9 @@ const BlogsCategory = () => {
 		setLoading(false)
 	}, [categoryId, blogByCategory, dispatch , search, history])
 
-	const handlePagination = (page: number) => {
+	const handlePagination = async (page: number) => {
 		const search = `?page=${page}`
-		dispatch(getBlogsByCategory(categoryId, search))
+		await dispatch(getBlogsByCategory(categoryId, search))
 	}
 
 	if(!blogs) return <Loading loadFull loadingProps={loading} />;

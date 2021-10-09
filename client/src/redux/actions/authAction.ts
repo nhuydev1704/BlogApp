@@ -83,9 +83,11 @@ export const refreshToken = () => async (dispatch: Dispatch<IAuthType | IAlertTy
 export const logout = () => async (dispatch: Dispatch<IAuthType | IAlertType>) => {
     try {
         localStorage.removeItem('logged')
-        const url = 'logout'
-        await getAPI(url)
-        window.location.href = '/'
+        dispatch({
+            type: AUTH,
+            payload: {}
+        })
+        await getAPI('logout')
     } catch (err: any) {
         notification['error']({
             message: "Blog Nguyễn Như Ý",

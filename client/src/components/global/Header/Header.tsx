@@ -19,6 +19,7 @@ import { RootStore } from '../../../utils/TypeScript';
 import Search from '../Search';
 import useStyles from './style';
 import { logout } from '../../../redux/actions/authAction'
+import {Button} from 'antd'
 
 export default function Header() {
     const classes = useStyles();
@@ -86,7 +87,7 @@ export default function Header() {
                 <Link to={`/profile/${auth?.user?._id}`} className={classes.account}>Thông tin</Link>
             </MenuItem>
             <MenuItem onClick={() => { handleMenuClose(); dispatch(logout()); }}>
-                <Link to="/logout" className={classes.account}>Đăng xuất</Link>
+                <Button type="text" style={{ color: '#333', fontWeight: 500 }} className={classes.account}>Đăng xuất</Button>
             </MenuItem>
         </Menu >
     );
@@ -137,7 +138,7 @@ export default function Header() {
                     <Link to="/profile" style={{ color: '#333', fontWeight: 500 }} className={classes.account}>Thông tin</Link>
                 </MenuItem>
                 <MenuItem onClick={() => { handleMenuClose(); dispatch(logout()); }}>
-                    <Link to="/logout" style={{ color: '#333', fontWeight: 500 }} className={classes.account}>Đăng xuất</Link>
+                    <Button type="text" style={{ color: '#333', fontWeight: 500 }} className={classes.account}>Đăng xuất</Button>
                 </MenuItem>
             </Menu>
             :

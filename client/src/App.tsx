@@ -7,6 +7,9 @@ import { refreshToken } from './redux/actions/authAction'
 import { getCategory } from './redux/actions/categoryAction'
 import { getHomeBlogs } from './redux/actions/homeBlogsAction'
 import { useDispatch } from 'react-redux';
+import moment from 'moment'
+import 'moment/locale/vi'  // without this line it didn't work
+moment.locale('vi')
 
 const App = () => {
 

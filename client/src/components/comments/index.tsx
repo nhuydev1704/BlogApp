@@ -1,15 +1,19 @@
-import React, { createElement, useState } from "react";
+import React, { createElement, useState, useEffect } from "react";
 import { Comment, Tooltip, Avatar } from "antd";
 import moment from "moment";
+import { useDispatch, useSelector } from "react-redux";
 import {
 	DislikeOutlined,
 	LikeOutlined,
 	DislikeFilled,
 	LikeFilled,
 } from "@ant-design/icons";
-import { IComment } from "../../utils/TypeScript";
+import { IComment, RootStore, IBlog, IUser } from "../../utils/TypeScript";
 import { Link } from "react-router-dom";
 import Skeleton from "@mui/material/Skeleton";
+import InputComment from "./InputComment";
+import CommentItem from "./CommentItem";
+import Button from '@mui/material/Button';
 import "./style.css";
 
 interface IProps {
@@ -17,97 +21,42 @@ interface IProps {
 }
 
 const Comments: React.FC<IProps> = ({ comment }) => {
-	const [likes, setLikes] = useState(0);
-	const [dislikes, setDislikes] = useState(0);
-	const [action, setAction] = useState<any>();
+	const [showReply, setShowReply] = useState<IComment[]>([]);
+	const [nextReplyComment, setNextReplyComment] = useState(2);
 
-	const like = () => {
-		setLikes(1);
-		setDislikes(0);
-		setAction("liked");
-	};
-
-	const dislike = () => {
-		setLikes(0);
-		setDislikes(1);
-		setAction("disliked");
-	};
-
-	const actions: any = [
-		<Tooltip key="comment-basic-like" title="Like">
-			<span onClick={like}>
-				{createElement(action === "liked" ? LikeFilled : LikeOutlined)}
-				<span className="comment-action">{likes}</span>
-			</span>
-		</Tooltip>,
-		<Tooltip key="comment-basic-dislike" title="Dislike">
-			<span onClick={dislike}>
-				{React.createElement(
-					action === "disliked" ? DislikeFilled : DislikeOutlined
+	useEffect(() => {
+		if (!comment.replyCM) return;
+		setShowReply(comment.replyCM);
+	}, [comment.replyCM]);
+	return (
+		<CommentItem
+			comment={comment}
+			showReply={showReply}
+			setShowReply={setShowReply}
+		>
+			{showReply &&
+				showReply.length > 0 &&
+				showReply.slice(0, nextReplyComment).map((comment, index) => (
+					<div key={index}>
+						<CommentItem
+							comment={comment}
+							showReply={showReply}
+							setShowReply={setShowReply}
+						/>
+					</div>
+				))}
+			<div>
+				{showReply.length - nextReplyComment > 0 ? (
+					<Button variant="text" onClick={() => setNextReplyComment(nextReplyComment + 2)}>
+						<small>Tải thêm bình luận</small>
+					</Button>
+				) : showReply.length > 2 && (
+					<Button variant="text" onClick={() => setNextReplyComment(2)}>
+						<small>Ẩn bình luận</small>
+					</Button>
 				)}
-				<span className="comment-action">{dislikes}</span>
-			</span>
-		</Tooltip>,
-		<span key="comment-basic-reply-to">Trả lời</span>,
-	];
-
-	return comment.user ? (
-		<Comment
-			actions={
-				!comment._id ? (
-					<Skeleton animation="wave" height={10} width="40%" />
-				) : (
-					actions
-				)
-			}
-			author={
-				!comment._id ? (
-					<Skeleton
-						animation="wave"
-						height={10}
-						width="80%"
-						style={{ marginBottom: 6 }}
-					/>
-				) : (
-					<Link to={"/profile/" + comment.user._id}>
-						{comment.user.name}
-					</Link>
-				)
-			}
-			avatar={
-				!comment._id ? (
-					<Skeleton
-						animation="wave"
-						variant="circular"
-						width={40}
-						height={40}
-					/>
-				) : (
-					<Avatar
-						src={comment.user.avatar}
-						alt={comment.user.avatar}
-					/>
-				)
-			}
-			content={
-				!comment._id ? (
-					<Skeleton animation="wave" height={10} width="40%" />
-				) : (
-					<div
-						dangerouslySetInnerHTML={{
-							__html: comment.content,
-						}}
-					/>
-				)
-			}
-			datetime={
-				<Tooltip title={moment().format("YYYY-MM-DD HH:mm:ss")}>
-					<span>{moment().fromNow()}</span>
-				</Tooltip>
-			}
-		/>
-	) : (
-		<></>
+			</div>
+		</CommentItem>
 	);
 };
 

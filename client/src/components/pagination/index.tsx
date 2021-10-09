@@ -5,7 +5,7 @@ import {useHistory} from 'react-router-dom'
 
 const PaginationComponent = (props: any) => {
 	const total = get(props, 'total', 0)
-	const [ page, setPage] = useState(1)
+	const [ page, setPage ] = useState(1)
 	const history = useHistory()
 
 	const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
