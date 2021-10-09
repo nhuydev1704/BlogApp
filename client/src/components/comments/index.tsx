@@ -9,6 +9,7 @@ import {
 } from "@ant-design/icons";
 import { IComment } from "../../utils/TypeScript";
 import { Link } from "react-router-dom";
+import Skeleton from "@mui/material/Skeleton";
 import "./style.css";
 
 interface IProps {
@@ -32,7 +33,7 @@ const Comments: React.FC<IProps> = ({ comment }) => {
 		setAction("disliked");
 	};
 
-	const actions = [
+	const actions: any = [
 		<Tooltip key="comment-basic-like" title="Like">
 			<span onClick={like}>
 				{createElement(action === "liked" ? LikeFilled : LikeOutlined)}
@@ -47,29 +48,57 @@ const Comments: React.FC<IProps> = ({ comment }) => {
 				<span className="comment-action">{dislikes}</span>
 			</span>
 		</Tooltip>,
-		<span key="comment-basic-reply-to">Reply to</span>,
+		<span key="comment-basic-reply-to">Trả lời</span>,
 	];
 
 	return comment.user ? (
 		<Comment
-			actions={actions}
+			actions={
+				!comment._id ? (
+					<Skeleton animation="wave" height={10} width="40%" />
+				) : (
+					actions
+				)
+			}
 			author={
-				<Link to={`/profile/${comment.user._id}`}>
-					{comment.user.name}
-				</Link>
+				!comment._id ? (
+					<Skeleton
+						animation="wave"
+						height={10}
+						width="80%"
+						style={{ marginBottom: 6 }}
+					/>
+				) : (
+					<Link to={"/profile/" + comment.user._id}>
+						{comment.user.name}
+					</Link>
+				)
 			}
 			avatar={
-				<Avatar
-					src={comment.user.avatar}
-					alt={`${comment.user.avatar}`}
-				/>
+				!comment._id ? (
+					<Skeleton
+						animation="wave"
+						variant="circular"
+						width={40}
+						height={40}
+					/>
+				) : (
+					<Avatar
+						src={comment.user.avatar}
+						alt={comment.user.avatar}
+					/>
+				)
 			}
 			content={
-				<div
-					dangerouslySetInnerHTML={{
-						__html: comment.content,
-					}}
-				/>
+				!comment._id ? (
+					<Skeleton animation="wave" height={10} width="40%" />
+				) : (
+					<div
+						dangerouslySetInnerHTML={{
+							__html: comment.content,
+						}}
+					/>
+				)
 			}
 			datetime={
 				<Tooltip title={moment().format("YYYY-MM-DD HH:mm:ss")}>

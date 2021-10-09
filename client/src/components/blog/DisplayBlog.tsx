@@ -6,13 +6,14 @@ import { Row, Col } from "antd";
 import Avatar from "@mui/material/Avatar";
 import Comments from "../comments";
 import InputComment from "../comments/InputComment";
+import { createComment } from "../../redux/actions/commentAction";
 
 interface IProps {
 	blog: IBlog;
 }
 
 const DisplayBlog: React.FC<IProps> = ({ blog }) => {
-	const { auth } = useSelector((state: RootStore) => state);
+	const { auth, comments } = useSelector((state: RootStore) => state);
 	const dispatch = useDispatch();
 
 	const [showComments, setShowComments] = useState<IComment[]>([]);
@@ -29,10 +30,16 @@ const DisplayBlog: React.FC<IProps> = ({ blog }) => {
 		};
 
 		setShowComments([data, ...showComments]);
+		dispatch(createComment(data, auth.access_token));
 	};
 
+	useEffect(() => {
+		if(comments.data.length === 0) return;
+		setShowComments(comments.data)
+	}, [comments.data])
+
 	return (
-		<div>
+		<div style={{ marginBottom: "20px" }}>
 			<h2 style={{ fontSize: "2rem", fontWeight: 700 }}>{blog.title}</h2>
 			<Row justify="space-between" style={{ marginBottom: "20px" }}>
 				<div style={{ display: "flex", alignItems: "center" }}>

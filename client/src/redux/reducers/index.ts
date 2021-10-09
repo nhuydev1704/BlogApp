@@ -6,6 +6,7 @@ import homeBlogs from './homeBlogsReducer'
 import blogByCategory from './blogByCategoryReducer'
 import otherInfo from './otherInfoReducer'
 import blogByUser from './blogByUserReducer'
+import comments from './commentReducer'
 
 export default combineReducers({
     auth,
@@ -15,4 +16,5 @@ export default combineReducers({
     blogByCategory,
     blogByUser,
     otherInfo,
+    comments
 })
