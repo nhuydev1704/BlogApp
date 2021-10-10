@@ -11,4 +11,8 @@ router.post('/reply_comment', auth, commentCtrl.replyComment)
 
 router.get('/comment/blog/:id', commentCtrl.getComment)
 
+router.patch('/comment/:id', auth, commentCtrl.updateComment)
+
+router.delete('/comment/:id', auth, commentCtrl.deleteComment)
+
 export default router;

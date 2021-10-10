@@ -1,19 +1,13 @@
-import React, { createElement, useState, useEffect } from "react";
-import { Comment, Tooltip, Avatar, Divider, Space } from "antd";
-import moment from "moment";
-import { useDispatch, useSelector } from "react-redux";
-import {
-	DislikeOutlined,
-	LikeOutlined,
-	DislikeFilled,
-	LikeFilled,
-} from "@ant-design/icons";
-import { IComment, RootStore, IBlog, IUser } from "../../utils/TypeScript";
-import { Link } from "react-router-dom";
+import { DeleteFilled, DislikeFilled, DislikeOutlined, EditFilled, LikeFilled, LikeOutlined } from "@ant-design/icons";
 import Skeleton from "@mui/material/Skeleton";
+import { Avatar, Comment, Divider, Space, Tooltip } from "antd";
+import moment from "moment";
+import React, { createElement, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { replyComment, updateComment, deleteComment } from "../../redux/actions/commentAction";
+import { IComment, RootStore } from "../../utils/TypeScript";
 import InputComment from "./InputComment";
-import { replyComment, updateComment } from "../../redux/actions/commentAction";
-import { EditFilled, DeleteFilled } from "@ant-design/icons";
 import "./style.css";
 
 interface IProps {
@@ -59,6 +53,7 @@ const CommentItem: React.FC<IProps> = ({
 			user: auth.user,
 			blog_id: comment.blog_id,
 			blog_user_id: comment.blog_user_id,
+			replyCM: [],
 			reply_user: comment.user,
 			comment_root: comment.comment_root || comment._id,
 			createdAt: new Date().toISOString(),
@@ -71,13 +66,18 @@ const CommentItem: React.FC<IProps> = ({
 	const handleUpdate = (body: string) => {
 		if (!auth.user || !auth.access_token || !edit) return;
 
-		if(body === edit.content) {
+		if (body === edit.content) {
 			return setEdit(undefined)
 		}
-		const newComment = {...edit, content: body}
-		dispatch(updateComment(newComment,auth.access_token))
+		const newComment = { ...edit, content: body }
+		dispatch(updateComment(newComment, auth.access_token))
 
 		setEdit(undefined)
+	}
+
+	const handleDelete = (comment: IComment) => {
+		if (!auth.user || !auth.access_token) return;
+		dispatch(deleteComment(comment, auth.access_token))
 	}
 
 	const menuUpdate = (comment: IComment) => {
@@ -87,7 +87,7 @@ const CommentItem: React.FC<IProps> = ({
 					<EditFilled onClick={() => setEdit(comment)} />
 				</Tooltip>
 				<Tooltip title="Xóa">
-					<DeleteFilled onClick={() => console.log("xoa")} />
+					<DeleteFilled onClick={() => handleDelete(comment)} />
 				</Tooltip>
 			</Space>
 		);
@@ -116,7 +116,7 @@ const CommentItem: React.FC<IProps> = ({
 				menuUpdate(comment)
 			) : (
 				<Tooltip title="Xóa">
-					<DeleteFilled />
+					<DeleteFilled onClick={() => handleDelete(comment)} />
 				</Tooltip>
 			)
 		) : (
@@ -143,11 +143,11 @@ const CommentItem: React.FC<IProps> = ({
 						</Link>
 					</Space>
 					<InputComment
-						 callback={handleUpdate}
-						 edit ={edit}
-						 setEdit={setEdit}
-					 />
-				</Space>	
+						callback={handleUpdate}
+						edit={edit}
+						setEdit={setEdit}
+					/>
+				</Space>
 			) : (
 				<Comment
 					actions={

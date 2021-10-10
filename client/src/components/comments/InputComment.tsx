@@ -1,23 +1,23 @@
-import React, { useState, useRef, useEffect } from "react";
+import { Button, Row } from 'antd';
+import React, { useEffect, useRef, useState } from "react";
+import { IComment } from '../../utils/TypeScript';
 import ReactEditor from "../editor/ReactEditor";
-import {IComment} from '../../utils/TypeScript'
-import {Button, Row} from 'antd'
 
 interface IProps {
 	callback: (body: string) => void
-	 edit?: IComment
-	 setEdit?: (edit?: IComment) => void
+	edit?: IComment
+	setEdit?: (edit?: IComment) => void
 }
 
-const InputComment: React.FC<IProps> = ({callback, edit, setEdit}) => {
+const InputComment: React.FC<IProps> = ({ callback, edit, setEdit }) => {
 	const [body, setBody] = useState("");
 	const divRef = useRef<HTMLDivElement>(null)
 
 	const handleSubmit = () => {
 		const div = divRef.current;
 		const text = (div?.innerText as string)
-		if(!text.trim()) {
-			if(setEdit) return setEdit(undefined)
+		if (!text.trim()) {
+			if (setEdit) return setEdit(undefined)
 			return;
 		}
 
@@ -27,27 +27,27 @@ const InputComment: React.FC<IProps> = ({callback, edit, setEdit}) => {
 	}
 
 	useEffect(() => {
-		if(edit) setBody(edit.content)
+		if (edit) setBody(edit.content)
 	}, [edit])
 
 	return (
-		<div style={{marginTop: '6px'}}>
+		<div style={{ marginTop: '6px' }}>
 			<ReactEditor body={body} setBody={setBody} />
 			<div
-				 ref={divRef}
-				 dangerouslySetInnerHTML={{
-				 	__html: body
-				 }}
-				 style={{display: 'none'}}
-			 />
-			 <Row justify="end" style={{marginTop: '6px'}}>
-			 	<Button
-			 		type="primary"
-			 		onClick={handleSubmit}
-			 	>
-			 		{edit ? 'Cập nhật' : 'Bình luận'}
-			 	</Button>
-			 </Row>
+				ref={divRef}
+				dangerouslySetInnerHTML={{
+					__html: body
+				}}
+				style={{ display: 'none' }}
+			/>
+			<Row justify="end" style={{ marginTop: '6px' }}>
+				<Button
+					type="primary"
+					onClick={handleSubmit}
+				>
+					{edit ? 'Cập nhật' : 'Bình luận'}
+				</Button>
+			</Row>
 		</div>
 	);
 };

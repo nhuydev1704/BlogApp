@@ -1,38 +1,33 @@
-import React, {useState, useEffect} from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import {getOtherUser} from '../../redux/actions/profileAction'
-import {RootStore, IUser} from '../../utils/TypeScript'
-import Loading from '../../components/notification/Loading'
-import {Row, Col} from 'antd'
-import Avatar from '@mui/material/Avatar';
+import Avatar from '@mui/material/Avatar'
+import { Col, Row } from 'antd'
 import moment from 'moment'
-
-interface IProps {
-    id: any,
-}
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { getOtherUser } from '../../redux/actions/profileAction'
+import { IUser, RootStore } from '../../utils/TypeScript'
 
 const OtherInfo = (props: any) => {
     const [other, setOther] = useState<IUser>()
 
     const dispatch = useDispatch()
 
-    const {otherInfo} = useSelector((state: RootStore) => state)
+    const { otherInfo } = useSelector((state: RootStore) => state)
 
     useEffect(() => {
-        if(!props.id) return;
+        if (!props.id) return;
 
-        if(otherInfo.every(user => user._id !== props.id)){
+        if (otherInfo.every(user => user._id !== props.id)) {
             dispatch(getOtherUser(props.id))
-        }else {
+        } else {
             const newUser = otherInfo.find(user => user._id === props.id)
-            if(newUser) setOther(newUser)
+            if (newUser) setOther(newUser)
         }
     }, [props.id, otherInfo, dispatch])
 
     console.log('otherInfo', otherInfo)
     return (
         other ? (
-            <Row  justify="center">        
+            <Row justify="center">
                 <Col span={24} className="item-center other_user-avatar">
                     <Avatar
                         alt="orther user"
@@ -50,7 +45,7 @@ const OtherInfo = (props: any) => {
                     Ngày gia nhập: {moment(other.createdAt).format("YYYY-MM-DD hh:mm:ss")}
                 </Col>
             </Row>
-         ) : <></>
+        ) : <></>
     )
 }
 

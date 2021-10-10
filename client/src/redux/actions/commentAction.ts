@@ -1,6 +1,6 @@
 import { notification } from "antd";
 import { IComment } from "../../utils/TypeScript";
-import { postAPI, getAPI } from "../../utils/FetchData";
+import { postAPI, getAPI, patchAPI, deleteAPI } from "../../utils/FetchData";
 import { Dispatch } from "redux";
 import { IAlertType, ALERT } from "../types/alertType";
 import {
@@ -12,26 +12,29 @@ import {
 	IReplyCommentType,
 	UPDATE_COMMENT,
 	UPDATE_REPLY,
-	IUpdateCommentType
+	IUpdateCommentType,
+	DELETE_COMMENT,
+	DELETE_REPLY,
+	IDeleteCommentType
 } from "../types/commentType";
 
 export const createComment =
 	(data: IComment, token: string) =>
-	async (dispatch: Dispatch<IAlertType | ICreateCommentType>) => {
-		try {
-			const res = await postAPI("comment", data, token);
-			dispatch({
-				type: CREATE_COMMENT,
-				payload: { ...res.data, user: data.user },
-			});
-		} catch (err: any) {
-			dispatch({ type: ALERT, payload: { loading: false } });
-			notification["error"]({
-				message: "Blog Nguyễn Như Ý",
-				description: err?.response?.data?.msg,
-			});
-		}
-	};
+		async (dispatch: Dispatch<IAlertType | ICreateCommentType>) => {
+			try {
+				await postAPI("comment", data, token);
+				// dispatch({
+				// 	type: CREATE_COMMENT,
+				// 	payload: { ...res.data, user: data.user },
+				// });
+			} catch (err: any) {
+				dispatch({ type: ALERT, payload: { loading: false } });
+				notification["error"]({
+					message: "Blog Nguyễn Như Ý",
+					description: err?.response?.data?.msg,
+				});
+			}
+		};
 
 export const getComments =
 	(id: string, num: number) => async (dispatch: Dispatch<IAlertType | IGetCommentType>) => {
@@ -57,38 +60,58 @@ export const getComments =
 	};
 export const replyComment =
 	(data: IComment, token: string) =>
-	async (dispatch: Dispatch<IAlertType | IReplyCommentType>) => {
-		try {
-			const res = await postAPI("reply_comment", data, token);
+		async (dispatch: Dispatch<IAlertType | IReplyCommentType>) => {
+			try {
+				await postAPI("reply_comment", data, token);
 
-			dispatch({
-				type: REPLY_COMMENT,
-				payload: { ...res.data, user: data.user, reply_user: data.reply_user },
-			});
-		} catch (err: any) {
-			dispatch({ type: ALERT, payload: { loading: false } });
-			notification["error"]({
-				message: "Blog Nguyễn Như Ý",
-				description: err?.response?.data?.msg,
-			});
-		}
-	};
+				// dispatch({
+				// 	type: REPLY_COMMENT,
+				// 	payload: { ...res.data, user: data.user, reply_user: data.reply_user },
+				// });
+			} catch (err: any) {
+				dispatch({ type: ALERT, payload: { loading: false } });
+				notification["error"]({
+					message: "Blog Nguyễn Như Ý",
+					description: err?.response?.data?.msg,
+				});
+			}
+		};
 
-export const updateComment = 
+export const updateComment =
 	(data: IComment, token: string) =>
-	async (dispatch: Dispatch<IAlertType | IUpdateCommentType>) => {
-		try {
-			dispatch({
-				type: data.comment_root ? UPDATE_REPLY :  UPDATE_COMMENT,
-				payload: data,
-			});
-			// const res = await postAPI("reply_comment", data, token);
+		async (dispatch: Dispatch<IAlertType | IUpdateCommentType>) => {
+			try {
+				dispatch({
+					type: data.comment_root ? UPDATE_REPLY : UPDATE_COMMENT,
+					payload: data,
+				});
+				await patchAPI(`comment/${data._id}`, {
+					data
+				}, token);
 
-		} catch (err: any) {
-			dispatch({ type: ALERT, payload: { loading: false } });
-			notification["error"]({
-				message: "Blog Nguyễn Như Ý",
-				description: err?.response?.data?.msg,
-			});
-		}
-	};
+			} catch (err: any) {
+				dispatch({ type: ALERT, payload: { loading: false } });
+				notification["error"]({
+					message: "Blog Nguyễn Như Ý",
+					description: err?.response?.data?.msg,
+				});
+			}
+		};
+export const deleteComment =
+	(data: IComment, token: string) =>
+		async (dispatch: Dispatch<IAlertType | IDeleteCommentType>) => {
+			try {
+				dispatch({
+					type: data.comment_root ? DELETE_REPLY : DELETE_COMMENT,
+					payload: data,
+				});
+				await deleteAPI(`comment/${data._id}`, token);
+
+			} catch (err: any) {
+				dispatch({ type: ALERT, payload: { loading: false } });
+				notification["error"]({
+					message: "Blog Nguyễn Như Ý",
+					description: err?.response?.data?.msg,
+				});
+			}
+		};

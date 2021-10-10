@@ -1,14 +1,14 @@
 import Card from '@material-ui/core/Card';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Col, Row, Spin } from 'antd';
+import { Col, Row } from 'antd';
 import React from 'react';
-import UserInfo from '../../components/profile/UserInfo';
-import { useParams } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { IParams, RootStore } from '../../utils/TypeScript'
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import Loading from '../../components/notification/Loading';
 import OtherInfo from '../../components/profile/OtherInfo';
-import Loading from '../../components/notification/Loading'
 import UserBlogs from '../../components/profile/UserBlogs';
+import UserInfo from '../../components/profile/UserInfo';
+import { IParams, RootStore } from '../../utils/TypeScript';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -33,7 +33,7 @@ const Profile = () => {
     return (
         <Loading loadFull>
             <Row gutter={[16, 16]} style={{ margin: '30px 0' }}>
-                <Col span={10} style={{marginTop: '10px'}}>
+                <Col span={10} style={{ marginTop: '10px' }}>
                     <Card className={classes.cardCustom} variant="outlined">
                         {
                             (auth.user?._id === slug)

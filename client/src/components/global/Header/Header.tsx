@@ -12,14 +12,14 @@ import HomeIcon from '@material-ui/icons/Home';
 import MailIcon from '@material-ui/icons/Mail';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import { Button } from 'antd';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { logout } from '../../../redux/actions/authAction';
 import { RootStore } from '../../../utils/TypeScript';
 import Search from '../Search';
 import useStyles from './style';
-import { logout } from '../../../redux/actions/authAction'
-import {Button} from 'antd'
 
 export default function Header() {
     const classes = useStyles();
@@ -29,7 +29,6 @@ export default function Header() {
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-    const { pathname } = useLocation()
     // const isActive = (pn: string) => {
     //     if (pn === pathname) return 'active';
     // }

@@ -1,16 +1,14 @@
-import { IUserProfile } from '../../utils/TypeScript'
-import { AUTH, IAuth } from '../types/authType'
-import { IAuthType } from "../types/authType"
-import { ALERT, IAlertType } from "../types/alertType"
+import { notification } from 'antd'
 import { Dispatch } from "redux"
-import { notification } from 'antd';
+import { getAPI, patchAPI } from '../../utils/FetchData'
 import { checkImage, imageUpload } from '../../utils/imageUpload'
-import { patchAPI, getAPI } from '../../utils/FetchData'
-
+import { ALERT, IAlertType } from "../types/alertType"
+import { AUTH, IAuth, IAuthType } from '../types/authType'
 import {
     GET_OTHER_INFO,
     IGetOtherInfoType
 } from '../types/profileType'
+
 
 export const updateUser = (avatar: File, name: string, auth: IAuth) =>
     async (dispatch: Dispatch<IAuthType | IAlertType>) => {
@@ -88,7 +86,7 @@ export const resetPassword = (password: string, token: string) =>
                 description: err?.response?.data?.msg,
             });
         }
-}
+    }
 
 export const getOtherUser = (id: string) =>
     async (dispatch: Dispatch<IGetOtherInfoType | IAlertType>) => {
@@ -97,7 +95,7 @@ export const getOtherUser = (id: string) =>
 
             const res = await getAPI(`user/${id}`)
 
-            if(res.status === 200) {
+            if (res.status === 200) {
                 dispatch({
                     type: GET_OTHER_INFO,
                     payload: res.data
@@ -113,4 +111,4 @@ export const getOtherUser = (id: string) =>
                 description: err?.response?.data?.msg,
             });
         }
-}
+    }

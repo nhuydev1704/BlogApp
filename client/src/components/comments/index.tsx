@@ -1,19 +1,7 @@
-import React, { createElement, useState, useEffect } from "react";
-import { Comment, Tooltip, Avatar } from "antd";
-import moment from "moment";
-import { useDispatch, useSelector } from "react-redux";
-import {
-	DislikeOutlined,
-	LikeOutlined,
-	DislikeFilled,
-	LikeFilled,
-} from "@ant-design/icons";
-import { IComment, RootStore, IBlog, IUser } from "../../utils/TypeScript";
-import { Link } from "react-router-dom";
-import Skeleton from "@mui/material/Skeleton";
-import InputComment from "./InputComment";
-import CommentItem from "./CommentItem";
 import Button from '@mui/material/Button';
+import React, { useEffect, useState } from "react";
+import { IComment } from "../../utils/TypeScript";
+import CommentItem from "./CommentItem";
 import "./style.css";
 
 interface IProps {

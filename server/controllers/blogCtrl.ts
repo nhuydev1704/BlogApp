@@ -1,5 +1,6 @@
 import { Response, Request } from 'express'
 import Blogs from '../models/blogModel'
+import Comments from '../models/commentModel'
 import { IReqAuth } from '../config/interface'
 import mongoose from 'mongoose'
 
@@ -8,7 +9,7 @@ const Pagination = (req: IReqAuth) => {
     let limit = Number(req.query.limit) * 1 || 4;
     let skip = (page - 1) * limit;
 
-    return {page, limit, skip};
+    return { page, limit, skip };
 }
 
 const blogCtrl = {
@@ -28,7 +29,7 @@ const blogCtrl = {
             })
 
             await newBlog.save()
-            res.json({ newBlog })
+            res.json({ msg: "Tạo bài viết thành công.", ...newBlog._doc, user: req.user })
         } catch (err: any) {
             return res.status(500).json({ msg: err.message })
         }
@@ -93,59 +94,59 @@ const blogCtrl = {
         }
     },
     getBlogByCategory: async (req: Request, res: Response) => {
-        const {limit, skip } = Pagination(req)
+        const { limit, skip } = Pagination(req)
 
         try {
             const Data = await Blogs.aggregate([
-            {
-                $facet: {
-                    totalData: [
-                        {
-                            $match: {category: mongoose.Types.ObjectId(req.params.id)}
-                        },
-                        //User
-                        {
-                            $lookup: {
-                                from: "users",
-                                let: { user_id: "$user" },
-                                pipeline: [
-                                    { $match: { $expr: { $eq: ["$_id", "$$user_id"] } } },
-                                    { $project: { password: 0 } }
-                                ],
-                                as: "user"
+                {
+                    $facet: {
+                        totalData: [
+                            {
+                                $match: { category: mongoose.Types.ObjectId(req.params.id) }
+                            },
+                            //User
+                            {
+                                $lookup: {
+                                    from: "users",
+                                    let: { user_id: "$user" },
+                                    pipeline: [
+                                        { $match: { $expr: { $eq: ["$_id", "$$user_id"] } } },
+                                        { $project: { password: 0 } }
+                                    ],
+                                    as: "user"
+                                }
+                            },
+                            // array -> object
+                            { $unwind: "$user" },
+                            // sort
+                            {
+                                $sort: { createdAt: -1 }
+                            },
+                            {
+                                $skip: skip
+                            },
+                            {
+                                $limit: limit
                             }
-                        },
-                        // array -> object
-                        { $unwind: "$user" },
-                        // sort
-                        {
-                            $sort: {createdAt: -1}
-                        },
-                        {
-                            $skip: skip
-                        },
-                        {
-                            $limit: limit
-                        }
-                    ],
-                    totalCount: [
-                        {
-                            $match: {
-                                category: mongoose.Types.ObjectId(req.params.id)
+                        ],
+                        totalCount: [
+                            {
+                                $match: {
+                                    category: mongoose.Types.ObjectId(req.params.id)
+                                }
+                            },
+                            {
+                                $count: 'count'
                             }
-                        },
-                        {
-                            $count: 'count'
-                        }
-                    ]
+                        ]
+                    }
+                },
+                {
+                    $project: {
+                        count: { $arrayElemAt: ["$totalCount.count", 0] },
+                        totalData: 1
+                    }
                 }
-            },
-            {
-                $project:{
-                    count: {$arrayElemAt: ["$totalCount.count", 0]},
-                    totalData: 1
-                }
-            }
             ])
 
             const blogs = Data[0].totalData;
@@ -154,72 +155,72 @@ const blogCtrl = {
             // pagination
             let total = 0;
 
-            if(count % limit === 0) {
+            if (count % limit === 0) {
                 total = count / limit;
-            }else {
+            } else {
                 total = Math.floor(count / limit) + 1;
             }
 
-            res.json({blogs, total})
+            res.json({ blogs, total })
 
         } catch (err: any) {
             return res.status(500).json({ msg: err.message })
         }
     },
     getBlogByUser: async (req: Request, res: Response) => {
-        const {limit, skip } = Pagination(req)
+        const { limit, skip } = Pagination(req)
 
         try {
             const Data = await Blogs.aggregate([
-            {
-                $facet: {
-                    totalData: [
-                        {
-                            $match: {user: mongoose.Types.ObjectId(req.params.id)}
-                        },
-                        //User
-                        {
-                            $lookup: {
-                                from: "users",
-                                let: { user_id: "$user" },
-                                pipeline: [
-                                    { $match: { $expr: { $eq: ["$_id", "$$user_id"] } } },
-                                    { $project: { password: 0 } }
-                                ],
-                                as: "user"
+                {
+                    $facet: {
+                        totalData: [
+                            {
+                                $match: { user: mongoose.Types.ObjectId(req.params.id) }
+                            },
+                            //User
+                            {
+                                $lookup: {
+                                    from: "users",
+                                    let: { user_id: "$user" },
+                                    pipeline: [
+                                        { $match: { $expr: { $eq: ["$_id", "$$user_id"] } } },
+                                        { $project: { password: 0 } }
+                                    ],
+                                    as: "user"
+                                }
+                            },
+                            // array -> object
+                            { $unwind: "$user" },
+                            // sort
+                            {
+                                $sort: { createdAt: -1 }
+                            },
+                            {
+                                $skip: skip
+                            },
+                            {
+                                $limit: limit
                             }
-                        },
-                        // array -> object
-                        { $unwind: "$user" },
-                        // sort
-                        {
-                            $sort: {createdAt: -1}
-                        },
-                        {
-                            $skip: skip
-                        },
-                        {
-                            $limit: limit
-                        }
-                    ],
-                    totalCount: [
-                        {
-                            $match: {
-                                user: mongoose.Types.ObjectId(req.params.id)
+                        ],
+                        totalCount: [
+                            {
+                                $match: {
+                                    user: mongoose.Types.ObjectId(req.params.id)
+                                }
+                            },
+                            {
+                                $count: 'count'
                             }
-                        },
-                        {
-                            $count: 'count'
-                        }
-                    ]
+                        ]
+                    }
+                },
+                {
+                    $project: {
+                        count: { $arrayElemAt: ["$totalCount.count", 0] },
+                        totalData: 1
+                    }
                 }
-            },
-            {
-                $project:{
-                    count: {$arrayElemAt: ["$totalCount.count", 0]},
-                    totalData: 1
-                }
-            }
             ])
 
             const blogs = Data[0].totalData;
@@ -228,31 +229,64 @@ const blogCtrl = {
             // pagination
             let total = 0;
 
-            if(count % limit === 0) {
+            if (count % limit === 0) {
                 total = count / limit;
-            }else {
+            } else {
                 total = Math.floor(count / limit) + 1;
             }
 
-            res.json({blogs, total})
+            res.json({ blogs, total })
 
         } catch (err: any) {
             return res.status(500).json({ msg: err.message })
         }
     },
-    getBlog: async(req: Request, res: Response) => {
+    getBlog: async (req: Request, res: Response) => {
         try {
-            const blog = await Blogs.findOne({_id: req.params.id})
-            .populate("user", "-password")
+            const blog = await Blogs.findOne({ _id: req.params.id })
+                .populate("user", "-password")
 
-            if(!blog) return res.status(400).json({msg: "Bài viêt không tồn tại."})
+            if (!blog) return res.status(400).json({ msg: "Bài viêt không tồn tại." })
 
             return res.json(blog)
-        } catch(err: any) {
+        } catch (err: any) {
             // statements
-            return res.status(500).json({msg: err.message})
+            return res.status(500).json({ msg: err.message })
         }
-    }
+    },
+    updateBlog: async (req: IReqAuth, res: Response) => {
+        if (!req.user) return res.status(400).json({ msg: "Chưa xác thực." })
+
+        try {
+            const blog = await Blogs.findByIdAndUpdate({
+                _id: req.params.id, user: req.user._id
+            }, req.body)
+
+            if (!blog) return res.status(400).json({ msg: "Bài viêt không tồn tại." })
+
+            res.json({ msg: 'Cập nhật bài viết thành công.', blog })
+        } catch (err: any) {
+            return res.status(500).json({ msg: err.message })
+        }
+    },
+    deleteBlog: async (req: IReqAuth, res: Response) => {
+        if (!req.user) return res.status(400).json({ msg: "Chưa xác thực." })
+
+        try {
+            // delete blog
+            const blog = await Blogs.findByIdAndDelete({
+                _id: req.params.id, user: req.user._id
+            }, req.body)
+
+            if (!blog) return res.status(400).json({ msg: "Bài viêt không tồn tại." })
+
+            // delete comment
+            await Comments.deleteMany({ blog_id: blog._id })
+            res.json({ msg: 'Xóa bài viết thành công.', blog })
+        } catch (err: any) {
+            return res.status(500).json({ msg: err.message })
+        }
+    },
 }
 
 export default blogCtrl;

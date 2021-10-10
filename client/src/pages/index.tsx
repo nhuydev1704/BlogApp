@@ -1,19 +1,14 @@
-import { Col, Image, Row, Tooltip, Divider, Button } from 'antd'
+import { Button, Divider } from 'antd'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import NotFound from '../components/global/NotFound'
-import Loading from '../components/notification/Loading'
-import { RootStore, IBlog } from '../utils/TypeScript'
-import moment from 'moment'
-import Card from '@mui/material/Card';
 import CardBlog from '../components/cardBlog/CardBlog'
+import Loading from '../components/notification/Loading'
+import { IBlog, RootStore } from '../utils/TypeScript'
 
 const Home: React.FC<IBlog | any> = () => {
 
-    const { auth, homeBlogs } = useSelector((state: RootStore) => state);
-
-    console.log(homeBlogs)
+    const { homeBlogs } = useSelector((state: RootStore) => state);
 
     return (
         <div>
@@ -38,9 +33,9 @@ const Home: React.FC<IBlog | any> = () => {
                                 </>
                             }
                             {
-                                blog.count > 4 && 
+                                blog.count > 4 &&
                                 <Link to={`/blogs/${(blog.name).toLowerCase()}`}>
-                                    <Button type="link" block style={{textAlign: 'right', marginTop: '4px'}}>
+                                    <Button type="link" block style={{ textAlign: 'right', marginTop: '4px' }}>
                                         Xem tất cả...
                                     </Button>
                                 </Link>

@@ -103,7 +103,7 @@ div.ant-upload{
     height: 200px;
     width: -moz-available;
     width: -webkit-fill-available;
-    width: fill-available;
+    width: stretch;
     object-fit: cover;
     border: 1px solid rgb(0 0 0 / 6%);
     border-radius: 10px;

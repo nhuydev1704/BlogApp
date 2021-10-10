@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useCallback } from "react";
+import Avatar from "@mui/material/Avatar";
+import { Row, Skeleton } from "antd";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
-import { IBlog, RootStore, IUser, IComment } from "../../utils/TypeScript";
-import { Row, Col, Skeleton  } from "antd";
-import Avatar from "@mui/material/Avatar";
+import { createComment, getComments } from "../../redux/actions/commentAction";
+import { IBlog, IComment, IUser, RootStore } from "../../utils/TypeScript";
 import Comments from "../comments";
 import InputComment from "../comments/InputComment";
-import { createComment, getComments } from "../../redux/actions/commentAction";
-import PaginationComponent from '../pagination'
+import PaginationComponent from '../pagination';
 
 interface IProps {
 	blog: IBlog;
@@ -17,7 +17,6 @@ const DisplayBlog: React.FC<IProps> = ({ blog }) => {
 	const { auth, comments } = useSelector((state: RootStore) => state);
 	const dispatch = useDispatch();
 	const history = useHistory()
-	const { search } = history.location
 
 	const [showComments, setShowComments] = useState<IComment[]>([]);
 	const [loading, setLoading] = useState(false)
@@ -30,6 +29,7 @@ const DisplayBlog: React.FC<IProps> = ({ blog }) => {
 			user: auth.user,
 			blog_id: blog._id as string,
 			blog_user_id: (blog.user as IUser)._id,
+			replyCM: [],
 			createdAt: new Date().toISOString(),
 		};
 
@@ -42,7 +42,7 @@ const DisplayBlog: React.FC<IProps> = ({ blog }) => {
 	}, [comments.data])
 
 	const getComment = useCallback(
-		async(id: string, num = 1) => {
+		async (id: string, num = 1) => {
 			setLoading(true)
 			await dispatch(getComments(id, num))
 			setLoading(false)
@@ -52,7 +52,7 @@ const DisplayBlog: React.FC<IProps> = ({ blog }) => {
 	)
 
 	useEffect(() => {
-		if(!blog._id) return;
+		if (!blog._id) return;
 		setLoading(true)
 		const numPage = history.location.search.slice(6) || 1
 		getComment(blog._id, numPage);
@@ -60,7 +60,7 @@ const DisplayBlog: React.FC<IProps> = ({ blog }) => {
 	}, [blog._id, getComment, history])
 
 	const handlePagination = async (page: number) => {
-		if(!blog._id) return;
+		if (!blog._id) return;
 		setLoading(true)
 		await dispatch(getComments(blog._id, page))
 		setLoading(false)
@@ -110,13 +110,13 @@ const DisplayBlog: React.FC<IProps> = ({ blog }) => {
 				</h3>
 			)}
 			{
-				loading ? 
-					<Skeleton avatar paragraph={{ rows: 4 }} /> 
+				loading ?
+					<Skeleton avatar paragraph={{ rows: 4 }} />
 					: showComments?.map((comment, index) => (
-						<Comments key={index} comment={comment} /> 
+						<Comments key={index} comment={comment} />
 					))
 			}
-			<Row justify="end" style={{marginTop: '20px'}}>
+			<Row justify="end" style={{ marginTop: '20px' }}>
 				{
 					comments.total > 1 &&
 					<PaginationComponent total={comments.total} callback={handlePagination} />

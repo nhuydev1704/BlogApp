@@ -1,14 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react'
 import { Button, Col, notification, Row } from 'antd'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import FormCreateBlog from '../components/blog/FormCreateBlog'
 import PreviewBlog from '../components/blog/PreviewBlog'
-import ReactEditor from '../components/editor/ReactEditor'
-import Loading from '../components/notification/Loading'
-import { createBlog } from '../redux/actions/homeBlogsAction'
-import { IBlog, RootStore } from '../utils/TypeScript'
-import { validCreateBlog } from '../utils/Valid'
 import TinyEditor from '../components/editor/TinyEditor'
+import Loading from '../components/notification/Loading'
+import { createBlog, updateBlog } from '../redux/actions/homeBlogsAction'
+import { IBlog, RootStore, IUser } from '../utils/TypeScript'
+import { validCreateBlog, shallowEqual } from '../utils/Valid'
+import { getAPI } from '../utils/FetchData'
+import NotFound from '../components/global/NotFound'
 
 const initState = {
 	user: '',
@@ -20,15 +21,53 @@ const initState = {
 	createdAt: new Date().toISOString()
 }
 
-const CreateBlog = () => {
+interface IProps {
+	id?: string
+}
+
+const CreateBlog: React.FC<IProps> = ({ id }) => {
 	const [blog, setBlog] = useState<IBlog>(initState);
 	const [body, setBody] = useState("")
 	const [text, setText] = useState("")
+	const [loading, setLoading] = useState(false)
 
 	const divRef = useRef<HTMLDivElement>(null)
 
 	const { auth } = useSelector((state: RootStore) => state)
 	const dispatch = useDispatch();
+	const [oldData, setOldData] = useState<IBlog>(initState);
+
+	useEffect(() => {
+		if (!id) return;
+		setLoading(true)
+		getAPI(`blog/${id}`)
+			.then(res => {
+				setBlog(res.data)
+				setBody(res.data.content)
+				setOldData(res.data)
+				setLoading(false)
+			})
+			.catch(err => {
+				setLoading(false)
+				console.log(err)
+			})
+
+		const initData = {
+			user: '',
+			title: '',
+			content: '',
+			description: '',
+			thumbnail: '',
+			category: '',
+			createdAt: new Date().toISOString()
+		}
+
+		return () => {
+			setBlog(initData)
+			setBody('')
+			setOldData(initData)
+		}
+	}, [id])
 
 	useEffect(() => {
 		const div = divRef.current;
@@ -58,12 +97,32 @@ const CreateBlog = () => {
 
 		let newData = { ...blog, content: body }
 
-		dispatch(createBlog(newData, auth?.access_token))
+		if (id) {
+			const result = shallowEqual(oldData, newData)
+			if (!result) {
+				if ((blog.user as IUser)._id !== auth.user?._id)
+					return notification['warning'](
+						{
+							message: "Blog Nguyễn Như Ý",
+							description: "Bạn không phải tác giả bài viết."
+						});
+				dispatch(updateBlog(newData, auth?.access_token))
+			} else {
+				notification['warning'](
+					{
+						message: "Blog Nguyễn Như Ý",
+						description: "Nội dung cập nhật chưa được thay đổi."
+					});
+			}
+		} else {
+			dispatch(createBlog(newData, auth?.access_token))
+		}
 	}
 
+	if (!auth.user) return <NotFound />
 	return (
 		<div style={{ margin: '40px 0' }}>
-			<Loading loadFull>
+			<Loading loadFull loadingProps={loading}>
 				<Row gutter={[16, 16]}>
 					<Col span={12}>
 						<h3>Thông tin bài đăng</h3>
@@ -90,7 +149,7 @@ const CreateBlog = () => {
 					</Col>
 					<Col span={24} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 						<Button type="primary" onClick={handleSubmitCreateBlog}>
-							Tạo Bài Đăng
+							{id ? 'Sửa bài đăng' : 'Tạo Bài Đăng'}
 						</Button>
 					</Col>
 				</Row>

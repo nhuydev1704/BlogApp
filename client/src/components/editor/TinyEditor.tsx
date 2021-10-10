@@ -2,7 +2,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import { notification } from 'antd';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import tinymce from 'tinymce/tinymce'
+import 'tinymce/tinymce'
 import 'tinymce/icons/default';
 import 'tinymce/plugins/advlist';
 import 'tinymce/plugins/anchor';
@@ -37,14 +37,10 @@ interface IProps {
     body: string,
     setBody: (value: string) => void
 }
-interface Metadata {
-    selecte: any
-}
 
 const TinyEditor: React.FC<IProps> = ({ body, setBody }) => {
 
 
-    // const editorRef = useRef<any>(null);
     const dispatch = useDispatch()
     const handleEditorChange = (content: any, editor: any) => {
         setBody(content);
@@ -71,7 +67,7 @@ const TinyEditor: React.FC<IProps> = ({ body, setBody }) => {
                     file_browser_callback_types: 'image',
                     file_picker_callback: async function (callback, value, meta) {
                         console.log(meta)
-                        if (meta?.filetype == 'image') {
+                        if (meta?.filetype === 'image') {
                             let input: any = document.getElementById('my-file-upload');
                             input.click();
                             input.onchange = async () => {

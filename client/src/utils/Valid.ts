@@ -1,4 +1,4 @@
-import {IBlog} from './TypeScript'
+import { IBlog } from './TypeScript'
 
 
 export const validCreateBlog = ({
@@ -6,27 +6,27 @@ export const validCreateBlog = ({
 }: IBlog) => {
 	const err: string[] = []
 
-	if(title.trim().length < 10){
+	if (title.trim().length < 10) {
 		err.push("Tiều đề từ 10 kí tự trở lên.")
-	}else if(title.trim().length > 50) {
+	} else if (title.trim().length > 50) {
 		err.push("Tiều đề tối thiểu 50 kí tự.")
 	}
 
-	if(content.trim().length < 2000){
+	if (content.trim().length < 2000) {
 		err.push("Bài viết phải lớn hơn 2000 từ.")
 	}
 
-	if(description.trim().length < 50){
+	if (description.trim().length < 50) {
 		err.push("Mô tả từ 10 kí tự trở lên.")
-	}else if(description.trim().length > 200) {
+	} else if (description.trim().length > 200) {
 		err.push("Mô tả tối thiểu 200 kí tự.")
 	}
 
-	if(!thumbnail){
+	if (!thumbnail) {
 		err.push("Hình ảnh không được bỏ trống.")
 	}
 
-	if(!category){
+	if (!category) {
 		err.push("Danh mục chưa chọn.")
 	}
 
@@ -34,4 +34,21 @@ export const validCreateBlog = ({
 		errMsg: err,
 		errLength: err.length
 	}
+}
+
+export const shallowEqual = (onject1: any, object2: any) => {
+	const keys1 = Object.keys(onject1)
+	const keys2 = Object.keys(object2)
+
+	if (keys1.length !== keys2.length) {
+		return false;
+	}
+
+	for (let key of keys1) {
+		if (onject1[key] !== object2[key]) {
+			return false
+		}
+	}
+
+	return true;
 }

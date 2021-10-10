@@ -14,4 +14,9 @@ router.get('/blogs/user/:id', blogCtrl.getBlogByUser)
 
 router.get('/blog/:id', blogCtrl.getBlog)
 
+router.put('/blog/:id', auth, blogCtrl.updateBlog)
+
+router.delete('/blog/:id', auth, blogCtrl.deleteBlog)
+
+
 export default router
