@@ -74,9 +74,12 @@ const CardBlog = (props: any) => {
                                     style={{ marginTop: '4px' }}
                                 >
                                     <Col span={14}>
-                                        <Link to={`/profile/${item.user._id}`}>
-                                            Tạo bởi: {item?.user?.name!}
-                                        </Link>
+                                        {
+                                            item.user &&
+                                            <Link to={`/profile/${item.user._id}`}>
+                                                Tạo bởi: {item?.user?.name!}
+                                            </Link> 
+                                        }
                                     </Col>
                                     <Col
                                         span={10}

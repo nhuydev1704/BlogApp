@@ -18,5 +18,6 @@ router.put('/blog/:id', auth, blogCtrl.updateBlog)
 
 router.delete('/blog/:id', auth, blogCtrl.deleteBlog)
 
+router.get('/search/blogs', blogCtrl.searchBlog)
 
 export default router
