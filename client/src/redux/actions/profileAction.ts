@@ -8,11 +8,15 @@ import {
     GET_OTHER_INFO,
     IGetOtherInfoType
 } from '../types/profileType'
-
+import { checkTokenExp } from '../../utils/checkTokenExp';
 
 export const updateUser = (avatar: File, name: string, auth: IAuth) =>
     async (dispatch: Dispatch<IAuthType | IAlertType>) => {
         if (!auth.access_token || !auth.user) return;
+
+        const result = await checkTokenExp(auth.access_token, dispatch)
+        const access_token = result ? result : auth.access_token
+
         let url = '';
         try {
             dispatch({ type: ALERT, payload: { loading: true } })
@@ -33,7 +37,7 @@ export const updateUser = (avatar: File, name: string, auth: IAuth) =>
             dispatch({
                 type: AUTH,
                 payload: {
-                    access_token: auth.access_token,
+                    access_token: access_token,
                     user: {
                         ...auth.user,
                         avatar: url ? url : auth.user.avatar,
@@ -44,7 +48,7 @@ export const updateUser = (avatar: File, name: string, auth: IAuth) =>
 
             const res = await patchAPI('/user',
                 { avatar: url ? url : auth.user.avatar, name: name ? name : auth.user.name },
-                auth.access_token
+                access_token
             )
             if (res.status === 200) {
                 notification['success']({
@@ -67,9 +71,11 @@ export const updateUser = (avatar: File, name: string, auth: IAuth) =>
 export const resetPassword = (password: string, token: string) =>
     async (dispatch: Dispatch<IAuthType | IAlertType>) => {
         try {
+            const result = await checkTokenExp(token, dispatch)
+            const access_token = result ? result : token
             dispatch({ type: ALERT, payload: { loading: true } })
 
-            const res = await patchAPI('reset_password', { password }, token)
+            const res = await patchAPI('reset_password', { password }, access_token)
             if (res.status === 200) {
                 notification['success']({
                     message: "Blog Nguyễn Như Ý",

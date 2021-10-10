@@ -49,6 +49,12 @@ export default function Header() {
             : {},
     ]
 
+    const handleLogOut = () => {
+        if(!auth.access_token) return;
+
+        dispatch(logout(auth.access_token))
+    }
+
     let nameUser: any = auth?.user?.name
 
     const navLinks = auth.access_token ? afLoginLinks : bfLoginLinks
@@ -85,7 +91,7 @@ export default function Header() {
             <MenuItem onClick={handleMenuClose}>
                 <Link to={`/profile/${auth?.user?._id}`} className={classes.account}>Thông tin</Link>
             </MenuItem>
-            <MenuItem onClick={() => { handleMenuClose(); dispatch(logout()); }}>
+            <MenuItem onClick={() => { handleMenuClose(); handleLogOut(); }}>
                 <Button type="text" style={{ color: '#333', fontWeight: 500 }} className={classes.account}>Đăng xuất</Button>
             </MenuItem>
         </Menu >
@@ -136,7 +142,7 @@ export default function Header() {
                 <MenuItem onClick={handleMenuClose}>
                     <Link to="/profile" style={{ color: '#333', fontWeight: 500 }} className={classes.account}>Thông tin</Link>
                 </MenuItem>
-                <MenuItem onClick={() => { handleMenuClose(); dispatch(logout()); }}>
+                <MenuItem onClick={() => { handleMenuClose(); handleLogOut(); }}>
                     <Button type="text" style={{ color: '#333', fontWeight: 500 }} className={classes.account}>Đăng xuất</Button>
                 </MenuItem>
             </Menu>

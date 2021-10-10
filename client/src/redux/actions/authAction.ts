@@ -4,6 +4,7 @@ import { AUTH, IAuthType } from "../types/authType"
 import { ALERT, IAlertType } from "../types/alertType"
 import { Dispatch } from "redux"
 import { notification } from 'antd';
+import { checkTokenExp } from '../../utils/checkTokenExp';
 
 
 export const login = (userLogin: IUserLogin) => async (dispatch: Dispatch<IAuthType | IAlertType>) => {
@@ -80,14 +81,16 @@ export const refreshToken = () => async (dispatch: Dispatch<IAuthType | IAlertTy
     }
 }
 
-export const logout = () => async (dispatch: Dispatch<IAuthType | IAlertType>) => {
+export const logout = (token: string) => async (dispatch: Dispatch<IAuthType | IAlertType>) => {
+    const result = await checkTokenExp(token, dispatch)
+    const access_token = result ? result : token
     try {
         localStorage.removeItem('logged')
         dispatch({
             type: AUTH,
             payload: {}
         })
-        await getAPI('logout')
+        await getAPI('logout', access_token)
     } catch (err: any) {
         notification['error']({
             message: "Blog Nguyễn Như Ý",

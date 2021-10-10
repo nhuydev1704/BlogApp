@@ -11,6 +11,8 @@ import { notification } from 'antd';
 import { ICategory } from '../../utils/TypeScript'
 
 import { postAPI, getAPI, deleteAPI, patchAPI } from '../../utils/FetchData'
+import { checkTokenExp } from '../../utils/checkTokenExp';
+
 
 export const getCategory = () => async (dispatch: Dispatch<IAlertType | ICategoryType>) => {
     try {
@@ -30,10 +32,12 @@ export const getCategory = () => async (dispatch: Dispatch<IAlertType | ICategor
 }
 
 export const createCategory = (name: string, token: string) => async (dispatch: Dispatch<IAlertType | ICategoryType>) => {
+    const result = await checkTokenExp(token, dispatch)
+    const access_token = result ? result : token
     try {
         dispatch({ type: ALERT, payload: { loading: true } })
 
-        const res = await postAPI('category', { name }, token)
+        const res = await postAPI('category', { name }, access_token)
         if (res.status === 200) {
             notification['success']({
                 message: "Blog Nguyễn Như Ý",
@@ -58,12 +62,14 @@ export const createCategory = (name: string, token: string) => async (dispatch: 
 }
 
 export const updateCategory = (data: ICategory, token: string) => async (dispatch: Dispatch<IAlertType | ICategoryType>) => {
+    const result = await checkTokenExp(token, dispatch)
+    const access_token = result ? result : token
     try {
         dispatch({ type: ALERT, payload: { loading: true } })
 
         dispatch({ type: UPDATE_CATEGORY, payload: data })
 
-        const res = await patchAPI(`category/${data._id}`, { name: data.name }, token)
+        const res = await patchAPI(`category/${data._id}`, { name: data.name }, access_token)
         if (res.status === 200) {
             notification['success']({
                 message: "Blog Nguyễn Như Ý",
@@ -83,12 +89,15 @@ export const updateCategory = (data: ICategory, token: string) => async (dispatc
 }
 
 export const deleteCategory = (id: string, token: string) => async (dispatch: Dispatch<IAlertType | ICategoryType>) => {
+    const result = await checkTokenExp(token, dispatch)
+    const access_token = result ? result : token
+
     try {
         dispatch({ type: ALERT, payload: { loading: true } })
 
         dispatch({ type: DELETE_CATEGORY, payload: id })
 
-        const res = await deleteAPI(`category/${id}`, token)
+        const res = await deleteAPI(`category/${id}`, access_token)
         if (res.status === 200) {
             notification['success']({
                 message: "Blog Nguyễn Như Ý",

@@ -6,7 +6,7 @@ import { generateActiveToken, generateAccessToken, generateRefreshToken } from "
 import sendEmail from '../config/sendMail'
 import { validateEmail, validPhone } from "../middleware/valid"
 import { sendSms, smsOTP, verifyOTP } from "../config/sendSMS"
-import { IDecodedToken, IUser, IGgPayload, IUserParams } from "../config/interface"
+import { IDecodedToken, IUser, IGgPayload, IUserParams, IReqAuth } from "../config/interface"
 import fetch from 'node-fetch'
 
 import { OAuth2Client } from "google-auth-library"
@@ -80,9 +80,15 @@ const authCtrl = {
             return res.status(500).json({ msg: err.message })
         }
     },
-    logout: async (req: Request, res: Response) => {
+    logout: async (req: IReqAuth, res: Response) => {
+        if (!req.user) return res.status(400).json({ msg: "Chưa xác thực." })
         try {
             res.clearCookie('refreshtoken', { path: `/api/refresh_token` })
+
+            await Users.findOneAndUpdate({ _id: req.user._id}, {
+                rf_token: ''
+            })
+
             return res.json({ msg: "Đăng xuất thành công" })
 
         } catch (err: any) {
@@ -97,10 +103,17 @@ const authCtrl = {
             const decoded = <IDecodedToken>jwt.verify(rf_token, `${process.env.REFRESH_TOKEN_SECRET}`)
             if (!decoded.id) return res.status(400).json({ msg: "Hãy đăng nhập trước" })
 
-            const user = await Users.findById(decoded.id).select("-password")
+            const user = await Users.findById(decoded.id).select("-password +rf_token")
             if (!user) return res.status(400).json({ msg: "Tài khoản không tồn tại" })
+                console.log(user)
+            if(rf_token !== user.rf_token) return res.status(400).json({ msg: "Đăng nhập để thực hiện." })
 
             const access_token = generateAccessToken({ id: user._id })
+            const refresh_token = generateRefreshToken({ id: user._id }, res)
+
+            await Users.findOneAndUpdate({ _id: user._id}, {
+                rf_token: refresh_token
+            })
 
             res.json({
                 access_token,
@@ -231,12 +244,10 @@ const loginUser = async (user: IUser, password: string, res: Response) => {
     }
 
     const access_token = generateAccessToken({ id: user._id })
-    const refresh_token = generateRefreshToken({ id: user._id })
+    const refresh_token = generateRefreshToken({ id: user._id }, res)
 
-    res.cookie('refreshtoken', refresh_token, {
-        httpOnly: true,
-        path: `/api/refresh_token`,
-        maxAge: 30 * 24 * 60 * 60 * 1000 // 30days
+    await Users.findOneAndUpdate({ _id: user._id}, {
+        rf_token: refresh_token
     })
 
     res.json({
@@ -248,16 +259,12 @@ const loginUser = async (user: IUser, password: string, res: Response) => {
 
 const registerUser = async (user: IUserParams, res: Response) => {
     const newUser = new Users(user)
-    await newUser.save()
 
     const access_token = generateAccessToken({ id: newUser._id })
-    const refresh_token = generateRefreshToken({ id: newUser._id })
+    const refresh_token = generateRefreshToken({ id: newUser._id }, res)
 
-    res.cookie('refreshtoken', refresh_token, {
-        httpOnly: true,
-        path: `/api/refresh_token`,
-        maxAge: 30 * 24 * 60 * 60 * 1000 // 30days
-    })
+    newUser.rf_token = refresh_token
+    await newUser.save()
 
     res.json({
         msg: 'Đăng nhập thành công',

@@ -7,8 +7,11 @@ import { ALERT, IAlertType } from '../types/alertType'
 import {
 	GET_BLOGS_BY_CATEGORY, GET_BLOGS_BY_USER, GET_HOME_BLOGS, IGetBlogsByCategoryType, IGetBlogsByUserType, IGetHomeBlogsType, DELETE_BLOG, CREATE_BLOG_USER_ID, ICreateBlogsByUserType, IdeleteBlogsByUserType
 } from '../types/homeBlogsType'
+import { checkTokenExp } from '../../utils/checkTokenExp';
 
 export const createBlog = (dataBlog: IBlog, token: string) => async (dispatch: Dispatch<IAlertType | ICreateBlogsByUserType>) => {
+	const result = await checkTokenExp(token, dispatch)
+    const access_token = result ? result : token
 	let url = '';
 	try {
 		dispatch({ type: ALERT, payload: { loading: true } })
@@ -21,7 +24,7 @@ export const createBlog = (dataBlog: IBlog, token: string) => async (dispatch: D
 		}
 
 		const newBlog = { ...dataBlog, thumbnail: url }
-		const res = await postAPI('blog', newBlog, token)
+		const res = await postAPI('blog', newBlog, access_token)
 		if (res.status === 200) {
 			notification['success']({
 				message: "Blog Nguyễn Như Ý",
@@ -45,6 +48,8 @@ export const createBlog = (dataBlog: IBlog, token: string) => async (dispatch: D
 }
 
 export const updateBlog = (dataBlog: IBlog, token: string) => async (dispatch: Dispatch<IAlertType>) => {
+	const result = await checkTokenExp(token, dispatch)
+    const access_token = result ? result : token
 	let url = '';
 	try {
 		dispatch({ type: ALERT, payload: { loading: true } })
@@ -57,7 +62,7 @@ export const updateBlog = (dataBlog: IBlog, token: string) => async (dispatch: D
 		}
 
 		const newBlog = { ...dataBlog, thumbnail: url }
-		const res = await putAPI(`blog/${newBlog._id}`, newBlog, token)
+		const res = await putAPI(`blog/${newBlog._id}`, newBlog, access_token)
 		if (res.status === 200) {
 			notification['success']({
 				message: "Blog Nguyễn Như Ý",
@@ -76,12 +81,14 @@ export const updateBlog = (dataBlog: IBlog, token: string) => async (dispatch: D
 }
 
 export const deleteBlog = (blog: IBlog, token: string) => async (dispatch: Dispatch<IAlertType | IdeleteBlogsByUserType>) => {
+	const result = await checkTokenExp(token, dispatch)
+    const access_token = result ? result : token
 	try {
 		dispatch({ type: ALERT, payload: { loading: true } })
 
 		dispatch({ type: DELETE_BLOG, payload: blog })
 
-		const res = await deleteAPI(`blog/${blog._id}`, token)
+		const res = await deleteAPI(`blog/${blog._id}`, access_token)
 		if (res.status === 200) {
 			notification['success']({
 				message: "Blog Nguyễn Như Ý",
