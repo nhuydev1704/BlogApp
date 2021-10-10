@@ -18,7 +18,6 @@ const FormCreateBlog: React.FC<IProps> = ({ blog, setBlog }) => {
 	const handleChangeInput = (e: any) => {
 		const { value, name } = e.target;
 		setBlog({ ...blog, [name]: value });
-		console.log({ [name]: value });
 	};
 
 	const handleChangeSelect = (value: string) => {

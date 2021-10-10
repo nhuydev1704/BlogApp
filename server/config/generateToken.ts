@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import {Response} from 'express'
+import { Response } from 'express'
 const {
     ACTIVE_TOKEN_SECRET,
     ACCESS_TOKEN_SECRET,
@@ -11,11 +11,11 @@ export const generateActiveToken = (payload: object) => {
 }
 
 export const generateAccessToken = (payload: object) => {
-    return jwt.sign(payload, `${ACCESS_TOKEN_SECRET}`, { expiresIn: '15s' })
+    return jwt.sign(payload, `${ACCESS_TOKEN_SECRET}`, { expiresIn: '15m' })
 }
 
 export const generateRefreshToken = (payload: object, res: Response) => {
-    const refresh_token =  jwt.sign(payload, `${REFRESH_TOKEN_SECRET}`, { expiresIn: '30d' })
+    const refresh_token = jwt.sign(payload, `${REFRESH_TOKEN_SECRET}`, { expiresIn: '30d' })
 
     res.cookie('refreshtoken', refresh_token, {
         httpOnly: true,

@@ -24,7 +24,6 @@ const OtherInfo = (props: any) => {
         }
     }, [props.id, otherInfo, dispatch])
 
-    console.log('otherInfo', otherInfo)
     return (
         other ? (
             <Row justify="center">

@@ -79,7 +79,7 @@ const Login = () => {
 
     useEffect(() => {
         if (auth.access_token) {
-            let url = history.location.search.replace('?', '/') 
+            let url = history.location.search.replace('?', '/')
             return history.push(url)
         }
     }, [auth.access_token, history]);
@@ -128,7 +128,7 @@ const Login = () => {
                                     <Button className={classes.buttonCustom} color="secondary">
                                         <Link
                                             style={{ color: 'rgba(0, 0, 0, 0.87)', margin: '0 0 4px 4px' }}
-                                            to="/forPassword">
+                                            to="/forgot_password">
                                             Quên mật khẩu?
                                         </Link>
                                     </Button>

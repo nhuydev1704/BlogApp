@@ -11,7 +11,6 @@ const SocicalLogin = (props: any) => {
 
     const onSuccess = (googleUser: GoogleLoginResponse) => {
         const id_token = googleUser.getAuthResponse().id_token;
-        // console.log(id_token)
         dispatch(gooogleLogin(id_token))
     }
 

@@ -85,7 +85,7 @@ const authCtrl = {
         try {
             res.clearCookie('refreshtoken', { path: `/api/refresh_token` })
 
-            await Users.findOneAndUpdate({ _id: req.user._id}, {
+            await Users.findOneAndUpdate({ _id: req.user._id }, {
                 rf_token: ''
             })
 
@@ -105,13 +105,12 @@ const authCtrl = {
 
             const user = await Users.findById(decoded.id).select("-password +rf_token")
             if (!user) return res.status(400).json({ msg: "Tài khoản không tồn tại" })
-                console.log(user)
-            if(rf_token !== user.rf_token) return res.status(400).json({ msg: "Đăng nhập để thực hiện." })
+            if (rf_token !== user.rf_token) return res.status(400).json({ msg: "Đăng nhập để thực hiện." })
 
             const access_token = generateAccessToken({ id: user._id })
             const refresh_token = generateRefreshToken({ id: user._id }, res)
 
-            await Users.findOneAndUpdate({ _id: user._id}, {
+            await Users.findOneAndUpdate({ _id: user._id }, {
                 rf_token: refresh_token
             })
 
@@ -230,7 +229,36 @@ const authCtrl = {
         } catch (err: any) {
             return res.status(500).json({ msg: err.message })
         }
-    }
+    },
+    forgotPassword: async (req: Request, res: Response) => {
+        try {
+            const { account } = req.body
+            const user = await Users.findOne({ account })
+            if (!user)
+                return res.status(400).json({ msg: 'Tài khoản không tồn tại.' })
+
+            if (user.type !== 'register')
+                return res.status(400).json({
+                    msg: `Tài khoản đã đăng nhập nhanh bằng ${user.type}.`
+                })
+
+            const access_token = generateAccessToken({ id: user._id })
+
+            const url = `${CLIENT_URL}/reset_password/${access_token}`
+
+            if (validPhone(account)) {
+                sendSms(account, url, "Quên mật khẩu?")
+                return res.json({ msg: "Thành công! Kiểm tra điện thoại." })
+
+            } else if (validateEmail(account)) {
+                sendEmail(account, url, "Quên mật khẩu?")
+                return res.json({ msg: "Thành công! Kiểm tra địa chỉ Email." })
+            }
+
+        } catch (err: any) {
+            return res.status(500).json({ msg: err.message })
+        }
+    },
 }
 
 const loginUser = async (user: IUser, password: string, res: Response) => {
@@ -246,7 +274,7 @@ const loginUser = async (user: IUser, password: string, res: Response) => {
     const access_token = generateAccessToken({ id: user._id })
     const refresh_token = generateRefreshToken({ id: user._id }, res)
 
-    await Users.findOneAndUpdate({ _id: user._id}, {
+    await Users.findOneAndUpdate({ _id: user._id }, {
         rf_token: refresh_token
     })
 

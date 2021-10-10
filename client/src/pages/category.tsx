@@ -32,10 +32,8 @@ const Category = () => {
             reset()
             return
         };
-        console.log(data)
         if (idCategory) {
             dispatch(updateCategory({ _id: idCategory, name: data.name }, auth.access_token))
-            console.log('vao day')
             setIdCategory('')
             reset()
             setIsEdit(false)
@@ -51,7 +49,6 @@ const Category = () => {
     }
 
     const onEdit = async (name: string, id: string) => {
-        console.log(id)
         setIdCategory(id)
         setNameCategory(name)
         setIsEdit(true)

@@ -66,12 +66,10 @@ const TinyEditor: React.FC<IProps> = ({ body, setBody }) => {
                     paste_data_images: true,
                     file_browser_callback_types: 'image',
                     file_picker_callback: async function (callback, value, meta) {
-                        console.log(meta)
                         if (meta?.filetype === 'image') {
                             let input: any = document.getElementById('my-file-upload');
                             input.click();
                             input.onchange = async () => {
-                                console.log('hehehe')
                                 dispatch({ type: ALERT, payload: { loading: true } });
                                 var file = input.files[0];
                                 const check = await checkImage(file)
@@ -84,7 +82,6 @@ const TinyEditor: React.FC<IProps> = ({ body, setBody }) => {
                                     return;
                                 }
                                 const photo = await imageUpload(file);
-                                console.log(photo)
                                 if (photo.url) {
                                     callback(photo.url!, {
                                         alt: file.name

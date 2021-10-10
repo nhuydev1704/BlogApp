@@ -1,17 +1,13 @@
-import { Dispatch } from 'redux'
-import { ALERT, IAlertType } from '../types/alertType'
-import {
-    CREATE_CATEGORY,
-    ICategoryType,
-    DELETE_CATEGORY,
-    UPDATE_CATEGORY,
-    GET_CATEGORIES
-} from '../types/categoryType'
 import { notification } from 'antd';
-import { ICategory } from '../../utils/TypeScript'
-
-import { postAPI, getAPI, deleteAPI, patchAPI } from '../../utils/FetchData'
+import { Dispatch } from 'redux';
 import { checkTokenExp } from '../../utils/checkTokenExp';
+import { deleteAPI, getAPI, patchAPI, postAPI } from '../../utils/FetchData';
+import { ICategory } from '../../utils/TypeScript';
+import { ALERT, IAlertType } from '../types/alertType';
+import {
+    CREATE_CATEGORY, DELETE_CATEGORY, GET_CATEGORIES, ICategoryType, UPDATE_CATEGORY
+} from '../types/categoryType';
+
 
 
 export const getCategory = () => async (dispatch: Dispatch<IAlertType | ICategoryType>) => {
